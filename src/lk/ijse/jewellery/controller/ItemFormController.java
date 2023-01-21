@@ -13,7 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import lk.ijse.jewellery.model.Item;
 import lk.ijse.jewellery.util.Navigation;
 import lk.ijse.jewellery.util.NotificationController;
-import lk.ijse.jewellery.util.crudUtil;
+import lk.ijse.jewellery.dao.crudUtil;
 import lk.ijse.jewellery.util.validationUtil;
 
 import java.io.IOException;
@@ -107,8 +107,6 @@ public class ItemFormController {
         }
         loadAllItems();
         clearTextField();
-        //sout
-
     }
 
     /* load all items */

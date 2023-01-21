@@ -12,7 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import lk.ijse.jewellery.model.Order;
 import lk.ijse.jewellery.util.Navigation;
 import lk.ijse.jewellery.util.NotificationController;
-import lk.ijse.jewellery.util.crudUtil;
+import lk.ijse.jewellery.dao.crudUtil;
 
 import java.io.IOException;
 import java.sql.ResultSet;

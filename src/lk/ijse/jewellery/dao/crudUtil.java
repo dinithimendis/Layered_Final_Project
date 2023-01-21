@@ -1,4 +1,4 @@
-package lk.ijse.jewellery.util;
+package lk.ijse.jewellery.dao;
 
 import lk.ijse.jewellery.db.DBConnection;
 

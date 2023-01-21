@@ -1,14 +1,14 @@
 package lk.ijse.jewellery.controller;
 
 import lk.ijse.jewellery.model.OrderDetails;
-import lk.ijse.jewellery.util.crudUtil;
+import lk.ijse.jewellery.dao.crudUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class OrderCRUDController {
-    public boolean saveOrderDetails(ArrayList<OrderDetails> details) throws SQLException, ClassNotFoundException {
+    /*public boolean saveOrderDetails(ArrayList<OrderDetails> details) throws SQLException, ClassNotFoundException {
         for (OrderDetails det : details
         ) {
 
@@ -43,5 +43,5 @@ public class OrderCRUDController {
             return "O-001";
         }
 
-    }
+    }*/
 }

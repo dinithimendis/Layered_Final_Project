@@ -13,13 +13,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import lk.ijse.jewellery.db.DBConnection;
-import lk.ijse.jewellery.model.Customer;
+import lk.ijse.jewellery.model.CustomerDTO;
 import lk.ijse.jewellery.model.Item;
 import lk.ijse.jewellery.model.Order;
 import lk.ijse.jewellery.model.OrderDetails;
 import lk.ijse.jewellery.util.Navigation;
 import lk.ijse.jewellery.util.NotificationController;
-import lk.ijse.jewellery.util.crudUtil;
+import lk.ijse.jewellery.dao.crudUtil;
 import lk.ijse.jewellery.view.tm.CartTM;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -37,6 +37,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static lk.ijse.jewellery.controller.CustomerFormController.getCustomer;
+import static lk.ijse.jewellery.controller.OrderDetailsFormController.getOrderId;
+import static lk.ijse.jewellery.controller.OrderDetailsFormController.saveOrderDetails;
 
 public class PlaceOrderFormController {
     public TextField NameTxt;
@@ -104,7 +108,9 @@ public class PlaceOrderFormController {
     /* setting item code's to combo box  */
     private void setItemCodes() {
         try {
-            ItemCodeCombo.setItems(FXCollections.observableArrayList(ItemCRUDController.getItemCodes()));
+
+            //TODO ---------------------------------------------
+            ItemCodeCombo.setItems(FXCollections.observableArrayList(getItemCodes()));
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -132,7 +138,7 @@ public class PlaceOrderFormController {
      */
     public void setCustomerDetails(String selectedCustomerId) {
         try {
-            Customer c = CustomerCRUDController.getCustomer(selectedCustomerId);
+            CustomerDTO c = getCustomer(selectedCustomerId);
             if (c != null) {
 
                 NameTxt.setText(c.getCusName());
@@ -151,7 +157,9 @@ public class PlaceOrderFormController {
      */
     public void setItemDetails(String selectedItemCode) {
         try {
-            Item i = ItemCRUDController.getItem(selectedItemCode);
+
+            //TODO -------------------------------------------------
+            Item i = getItem(selectedItemCode);
             if (i != null) {
                 DescriptionTxt.setText(i.getDescription());
                 QtyOnHandTxt.setText(String.valueOf((i.getQty())));
@@ -187,7 +195,9 @@ public class PlaceOrderFormController {
     /* set order id */
     private void setOrderId() {
         try {
-            OrderID.setText(new OrderCRUDController().getOrderId());
+
+            //TODO ------------------------
+            OrderID.setText(getOrderId());
         } catch (SQLException | ClassNotFoundException throwable) {
             throwable.printStackTrace();
         }
@@ -226,7 +236,9 @@ public class PlaceOrderFormController {
             boolean isOrderSaved = crudUtil.execute("INSERT INTO `order` VALUES(?,?,?,?)",
                     order.getOrderId(), order.getCusId(), order.getOrderDate(), order.getOrderTime());
             if (isOrderSaved) {
-                boolean isDetailsSaved = new OrderCRUDController().saveOrderDetails(details);
+
+                //TODO -----------------------------------------------
+                boolean isDetailsSaved = saveOrderDetails(details);
                 if (isDetailsSaved) {
                     connection.commit();
                     NotificationController.AddedDetailsSuccessFully();
@@ -384,4 +396,33 @@ public class PlaceOrderFormController {
             e.printStackTrace();
         }
     }
+
+    public static ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
+        ResultSet result = crudUtil.execute("SELECT itemCode FROM item");
+        ArrayList<String> codeList = new ArrayList<>();
+        while (result.next()) {
+            codeList.add(result.getString(1));
+        }
+        return codeList;
+    }
+
+    public static Item getItem(String code) throws SQLException, ClassNotFoundException {
+        ResultSet result = crudUtil.execute("SELECT * FROM item WHERE itemCode=?", code);
+        if (result.next()) {
+            return new Item(
+                    result.getString(1),
+                    result.getString(2),
+                    result.getString(3),
+                    result.getInt(4),
+                    result.getDouble(5),
+                    result.getString(6)
+            );
+        }
+        return null;
+    }
+
+
+
+
+
 }

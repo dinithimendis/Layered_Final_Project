@@ -2,13 +2,15 @@ package lk.ijse.jewellery.model;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @ToString
 @EqualsAndHashCode
-public class Customer {
+public class CustomerDTO implements Serializable {
     private String cusId;
     private String title;
     private String cusName;

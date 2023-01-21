@@ -1,7 +1,7 @@
 package lk.ijse.jewellery.controller;
 
 import lk.ijse.jewellery.model.Item;
-import lk.ijse.jewellery.util.crudUtil;
+import lk.ijse.jewellery.dao.crudUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class ItemCRUDController {
 
-    public static ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
+/*    public static ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
         ResultSet result = crudUtil.execute("SELECT itemCode FROM item");
         ArrayList<String> codeList = new ArrayList<>();
         while (result.next()) {
@@ -31,6 +31,6 @@ public class ItemCRUDController {
             );
         }
         return null;
-    }
+    }*/
 
 }

@@ -10,21 +10,26 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.jewellery.model.Customer;
+import lk.ijse.jewellery.bo.BOFactory;
+import lk.ijse.jewellery.bo.custom.CustomerBO;
+import lk.ijse.jewellery.model.CustomerDTO;
 import lk.ijse.jewellery.util.Navigation;
 import lk.ijse.jewellery.util.NotificationController;
-import lk.ijse.jewellery.util.crudUtil;
+import lk.ijse.jewellery.dao.crudUtil;
 import lk.ijse.jewellery.util.validationUtil;
+import lk.ijse.jewellery.view.tm.CartTM;
+import lk.ijse.jewellery.view.tm.CustomerTM;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.regex.Pattern;
 
 public class CustomerFormController {
     public JFXButton CustomerSaveButton;
-    public TableView<Customer> TableContextFull;
+    public TableView<CustomerDTO> TableContextFull;
     public Label DateLbl;
     public Label TimeLbl;
     public AnchorPane CustomerAnchorPane;
@@ -35,16 +40,17 @@ public class CustomerFormController {
     public TextField txtMrMrs;
     public TextField txtCustomerAddress;
     public TextField txtNic;
-    public TableColumn<Customer, String> id;
-    public TableColumn<Customer, String> mrMrs;
-    public TableColumn<Customer, String> Address;
-    public TableColumn<Customer, String> TelNo;
-    public TableColumn<Customer, String> Province;
-    public TableColumn<Customer, String> NIC;
-    public TableColumn<Customer, String> colCustomer_Name;
+    public TableColumn<CustomerDTO, String> id;
+    public TableColumn<CustomerDTO, String> mrMrs;
+    public TableColumn<CustomerDTO, String> Address;
+    public TableColumn<CustomerDTO, String> TelNo;
+    public TableColumn<CustomerDTO, String> Province;
+    public TableColumn<CustomerDTO, String> NIC;
+    public TableColumn<CustomerDTO, String> colCustomer_Name;
     public Label customerIdLbl;
     LinkedHashMap<TextField, Pattern> map = new LinkedHashMap<>();
 
+    CustomerBO customerBO  = (CustomerBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.CUSTOMER);
 
     public void initialize() {
         id.setCellValueFactory(new PropertyValueFactory<>("cusId"));
@@ -56,10 +62,10 @@ public class CustomerFormController {
         NIC.setCellValueFactory(new PropertyValueFactory<>("nic"));
 
         /* load all customers in to the table */
-        try {
+       // try {
             loadAllCustomers();
-        } catch (SQLException | ClassNotFoundException ignored) {
-        }
+      //  } catch (SQLException | ClassNotFoundException ignored) {
+       // }
 
         CustomerSaveButton.setOnMouseClicked(event -> {
             try {
@@ -94,23 +100,20 @@ public class CustomerFormController {
     }
 
     /* load all customer details in to the customerForm ui - > table */
-    private void loadAllCustomers() throws SQLException, ClassNotFoundException {
-        ResultSet result = crudUtil.execute("SELECT * FROM customer");
-        ObservableList<Customer> obList = FXCollections.observableArrayList();
+    private void loadAllCustomers()  {
+        try {
+            ArrayList<CustomerDTO> allCustomers = customerBO.getAllCustomers();
 
-        while (result.next()) {
-            obList.add(
-                    new Customer(
-                            result.getString("cusId"),
-                            result.getString("title"),
-                            result.getString("cusName"),
-                            result.getString("address"),
-                            result.getString("telNo"),
-                            result.getString("province"),
-                            result.getString("nic")
-                    ));
+            for (CustomerDTO c : allCustomers) {
+                TableContextFull.getItems().add(new CustomerTM(c.getCusId(),c.getTitle(), c.getCusName(), c.getAddress(), c.getTelNo(), c.getProvince(), c.getNic()));
+            }
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+        } catch (ClassNotFoundException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
-        TableContextFull.setItems(obList);
+
+      //  TableContextFull.setItems(obList);
         TableContextFull.refresh();
     }
 
@@ -125,7 +128,7 @@ public class CustomerFormController {
         String nic = txtNic.getText();
 
 
-        Customer customer = new Customer(id, title, name, address, telNo, province, nic);
+        CustomerDTO customer = new CustomerDTO(id, title, name, address, telNo, province, nic);
         String sql = "INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
@@ -154,7 +157,7 @@ public class CustomerFormController {
     /* update customer */
     public void UpdateBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
 
-        Customer customer = new Customer(
+        CustomerDTO customer = new CustomerDTO(
                 txtCustomerID.getText(),
                 txtMrMrs.getText(),
                 txtCustomerName.getText(),
@@ -265,6 +268,31 @@ public class CustomerFormController {
 
     public void shiftToSave(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
 //        btnSaveOnAction();
+    }
+
+    public static ArrayList<String> getCustomerIds() throws SQLException, ClassNotFoundException {
+        ResultSet result = crudUtil.execute("SELECT cusId FROM customer");
+        ArrayList<String> ids = new ArrayList<>();
+        while (result.next()) {
+            ids.add(result.getString(1));
+        }
+        return ids;
+    }
+
+    public static CustomerDTO getCustomer(String id) throws SQLException, ClassNotFoundException {
+        ResultSet result = crudUtil.execute("SELECT * FROM customer WHERE cusId=?", id);
+        if (result.next()) {
+            return new CustomerDTO(
+                    result.getString(1),
+                    result.getString(2),
+                    result.getString(3),
+                    result.getString(4),
+                    result.getString(5),
+                    result.getString(6),
+                    result.getString(7)
+            );
+        }
+        return null;
     }
 
 

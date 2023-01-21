@@ -13,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class loadingEffectController {
+
+    //complete
     public JFXProgressBar ProgressBar;
     public AnchorPane newPage;
 

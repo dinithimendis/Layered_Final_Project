@@ -1,0 +1,25 @@
+package lk.ijse.jewellery.bo.custom.impl;
+
+import lk.ijse.jewellery.bo.custom.CustomerBO;
+import lk.ijse.jewellery.dao.DAOFactory;
+import lk.ijse.jewellery.dao.custom.CustomerDAO;
+import lk.ijse.jewellery.entity.Customer;
+import lk.ijse.jewellery.model.CustomerDTO;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class CustomerBOImpl implements CustomerBO {
+
+    CustomerDAO customerDAO = (CustomerDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.CUSTOMER);
+
+    @Override
+    public ArrayList<CustomerDTO> getAllCustomers() throws SQLException, ClassNotFoundException {
+        ArrayList<CustomerDTO> allCustomers= new ArrayList<>();
+        ArrayList<Customer> all = customerDAO.loadAllCustomers();
+        for (Customer c : all) {
+            allCustomers.add(new CustomerDTO(c.getCusId(), c.getTitle(),c.getCusName(), c.getAddress(),c.getTelNo(),c.getProvince(),c.getNic()));
+        }
+        return allCustomers;
+    }
+}

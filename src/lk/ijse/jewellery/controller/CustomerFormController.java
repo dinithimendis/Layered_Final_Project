@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.regex.Pattern;
 
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.name;
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.title;
+
 public class CustomerFormController {
     public JFXButton CustomerSaveButton;
     public TableView<CustomerTM> TableContextFull;
@@ -172,8 +175,23 @@ public class CustomerFormController {
 
     /* update customer */
     public void UpdateBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
+try {
+        customerBO.updateCustomer(new CustomerDTO(id,title,name,address,telNo,province,nic));
 
-        CustomerDTO customer = new CustomerDTO(
+    } catch (SQLException e) {
+        new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+
+    CustomerTM selectedCustomer = TableContextFull.getSelectionModel().getSelectedItem();
+            selectedCustomer.setTitle(String.valueOf(title));
+            selectedCustomer.setCusName(String.valueOf(name));
+            selectedCustomer.setAddress();
+            selectedCustomer.setTelNo(telNo);
+            selectedCustomer.setProvince(province);
+            selectedCustomer.setNic(nic);
+       /* CustomerDTO customer = new CustomerDTO(
                 txtCustomerID.getText(),
                 txtMrMrs.getText(),
                 txtCustomerName.getText(),
@@ -181,9 +199,9 @@ public class CustomerFormController {
                 txtTelNo.getText(),
                 txtCustomerProvince.getText(),
                 txtNic.getText()
-        );
+        );*/
 
-        boolean isUpdated = crudUtil.execute("UPDATE customer SET title=? , cusName=? , address=? , telNo=? , province=? , nic=? WHERE cusId=?",
+       /* boolean isUpdated = crudUtil.execute("UPDATE customer SET title=? , cusName=? , address=? , telNo=? , province=? , nic=? WHERE cusId=?",
                 customer.getTitle(),
                 customer.getCusName(),
                 customer.getAddress(),
@@ -191,21 +209,21 @@ public class CustomerFormController {
                 customer.getProvince(),
                 customer.getNic(),
                 customer.getCusId()
-        );
+        );*/
 
-        if (isUpdated) {
-            new Alert(Alert.AlertType.CONFIRMATION, "Customer Details Updated !").show();
+       // if (isUpdated) {
+         //   new Alert(Alert.AlertType.CONFIRMATION, "Customer Details Updated !").show();
             clearText();
             loadAllCustomers();
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
-        }
+        //} else {
+          //  new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
+       // }
 
     }
 
     /* delete customer */
     public void DeleteBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-        boolean isDeleted =crudUtil.execute("DELETE FROM customer WHERE cusId=?", txtCustomerID.getText());
+        /*boolean isDeleted =crudUtil.execute("DELETE FROM customer WHERE cusId=?", txtCustomerID.getText());
 
         if (isDeleted) {
             clearText();
@@ -213,9 +231,20 @@ public class CustomerFormController {
             NotificationController.detailsRemoved();
         } else {
             new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
+        }*/
+        try {
+            customerBO.deleteCustomer(cusId);
+
+            TableContextFull.getItems().remove(TableContextFull.getSelectionModel().getSelectedItem());
+            TableContextFull.getSelectionModel().clearSelection();
+
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "Failed to delete the customer " + id).show();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         }
 
-    }
 
     /* type id and search customer using clicking search image */
     public void searchOnAction(MouseEvent mouseEvent) throws SQLException, ClassNotFoundException {

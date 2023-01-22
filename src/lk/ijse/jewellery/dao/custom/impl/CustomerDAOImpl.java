@@ -28,4 +28,14 @@ public class CustomerDAOImpl implements CustomerDAO {
     public boolean loadAllCustomers(Customer entity) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?, ?)", entity.getCusId(), entity.getTitle(), entity.getCusName(), entity.getAddress(), entity.getTelNo(), entity.getProvince(), entity.getNic());
     }
+
+    @Override
+    public boolean update(Customer entity) throws SQLException, ClassNotFoundException {
+        return crudUtil.execute("UPDATE customer SET title=? , cusName=? , address=? , telNo=? , province=? , nic=? WHERE cusId=?", entity.getTitle(), entity.getCusName(), entity.getAddress(), entity.getTelNo(), entity.getProvince(), entity.getNic(), entity.getCusId());
+    }
+
+    @Override
+    public boolean delete(String cusId) throws SQLException, ClassNotFoundException {
+        return crudUtil.execute("DELETE FROM customer WHERE cusId=?", cusId);
+    }
 }

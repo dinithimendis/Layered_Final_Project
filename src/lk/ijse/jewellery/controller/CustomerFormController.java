@@ -176,7 +176,14 @@ public class CustomerFormController {
     /* update customer */
     public void UpdateBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
 try {
-        customerBO.updateCustomer(new CustomerDTO(txtCustomerID.getText(),txtMrMrs.getText(),txtCustomerName.getText(),txtCustomerAddress.getText(),txtTelNo.getText(),txtCustomerProvince.getText(),txtNic.getText()));
+        customerBO.updateCustomer(new CustomerDTO(
+                txtCustomerID.getText(),
+                txtMrMrs.getText(),
+                txtCustomerName.getText(),
+                txtCustomerAddress.getText(),
+                txtTelNo.getText(),
+                txtCustomerProvince.getText(),
+                txtNic.getText()));
 
     } catch (SQLException e) {
         new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
@@ -184,14 +191,14 @@ try {
         e.printStackTrace();
     }
 
-    CustomerTM selectedCustomer = TableContextFull.getSelectionModel().getSelectedItem();
-         selectedCustomer.setCusId(txtCustomerID.getText());
-            selectedCustomer.setTitle(txtMrMrs.getText());
-            selectedCustomer.setCusName(txtCustomerName.getText());
-            selectedCustomer.setAddress(txtCustomerAddress.getText());
-            selectedCustomer.setTelNo(txtTelNo.getText());
-            selectedCustomer.setProvince(txtCustomerProvince.getText());
-            selectedCustomer.setNic(txtNic.getText());
+        CustomerTM selectedCustomer = TableContextFull.getSelectionModel().getSelectedItem();
+        selectedCustomer.setCusId(txtCustomerID.getText());
+        selectedCustomer.setTitle(txtMrMrs.getText());
+        selectedCustomer.setCusName(txtCustomerName.getText());
+        selectedCustomer.setAddress(txtCustomerAddress.getText());
+        selectedCustomer.setTelNo(txtTelNo.getText());
+        selectedCustomer.setProvince(txtCustomerProvince.getText());
+        selectedCustomer.setNic(txtNic.getText());
 
        /* CustomerDTO customer = new CustomerDTO(
                 txtCustomerID.getText(),

@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class CustomerFormController {
     public JFXButton CustomerSaveButton;
-    public TableView<CustomerDTO> TableContextFull;
+    public TableView<CustomerTM> TableContextFull;
     public Label DateLbl;
     public Label TimeLbl;
     public AnchorPane CustomerAnchorPane;
@@ -101,6 +101,7 @@ public class CustomerFormController {
 
     /* load all customer details in to the customerForm ui - > table */
     private void loadAllCustomers()  {
+        TableContextFull.getItems().clear();
         try {
             ArrayList<CustomerDTO> allCustomers = customerBO.getAllCustomers();
 
@@ -113,8 +114,10 @@ public class CustomerFormController {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
 
-      //  TableContextFull.setItems(obList);
         TableContextFull.refresh();
+
+      //TableContextFull.setItems();
+
     }
 
     /* save customer */

@@ -131,11 +131,15 @@ public class CustomerFormController {
         String nic = txtNic.getText();
 
 
-        CustomerDTO customer = new CustomerDTO(id, title, name, address, telNo, province, nic);
-        String sql = "INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?, ?)";
+       // CustomerDTO customer = new CustomerDTO(id, title, name, address, telNo, province, nic);
+       // String sql = "INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try {
-            boolean isAdded = crudUtil.execute(sql,
+    // customerBO.addCustomer(new CustomerDTO(id, title, name, address, telNo, province, nic));
+
+      //  TableContextFull.getItems().add(new CustomerTM(id, title, name, address, telNo, province, nic));
+
+       try {
+            /* boolean isAdded = crudUtil.execute(sql,
                     customer.getCusId(),
                     customer.getTitle(),
                     customer.getCusName(),
@@ -143,16 +147,25 @@ public class CustomerFormController {
                     customer.getTelNo(),
                     customer.getProvince(),
                     customer.getNic()
-            );
+            );*/
+           customerBO.add(new CustomerDTO(id, title, name, address, telNo, province, nic));
 
-            if (isAdded) {
+           TableContextFull.getItems().add(new CustomerTM(id, title, name, address, telNo, province, nic));
+
+       } catch (SQLException e) {
+           new Alert(Alert.AlertType.ERROR, "Failed to save the customer " + e.getMessage()).show();
+       } catch (ClassNotFoundException e) {
+           e.printStackTrace();
+       }
+
+            /*if (isAdded) {
                 new Alert(Alert.AlertType.CONFIRMATION, "Customer Added!").show();
             } else {
                 new Alert(Alert.AlertType.WARNING, "Something happened!").show();
             }
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
-        }
+        }*/
         loadAllCustomers();
         clearText();
     }

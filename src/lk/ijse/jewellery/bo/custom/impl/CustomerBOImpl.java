@@ -22,4 +22,9 @@ public class CustomerBOImpl implements CustomerBO {
         }
         return allCustomers;
     }
+
+    @Override
+    public boolean add(CustomerDTO dto) throws SQLException, ClassNotFoundException {
+        return customerDAO.loadAllCustomers(new Customer(dto.getCusId(), dto.getTitle(),dto.getCusName(), dto.getAddress(),dto.getTelNo(),dto.getProvince(),dto.getNic()));
+    }
 }

@@ -23,4 +23,9 @@ public class CustomerDAOImpl implements CustomerDAO {
         }
         return allCustomers;
     }
+
+    @Override
+    public boolean loadAllCustomers(Customer entity) throws SQLException, ClassNotFoundException {
+        return crudUtil.execute("INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?, ?)", entity.getCusId(), entity.getTitle(), entity.getCusName(), entity.getAddress(), entity.getTelNo(), entity.getProvince(), entity.getNic());
+    }
 }

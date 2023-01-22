@@ -176,7 +176,7 @@ public class CustomerFormController {
     /* update customer */
     public void UpdateBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
 try {
-        customerBO.updateCustomer(new CustomerDTO(id,title,name,address,telNo,province,nic));
+        customerBO.updateCustomer(new CustomerDTO(txtCustomerID.getText(),txtMrMrs.getText(),txtCustomerName.getText(),txtCustomerAddress.getText(),txtTelNo.getText(),txtCustomerProvince.getText(),txtNic.getText()));
 
     } catch (SQLException e) {
         new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
@@ -185,12 +185,14 @@ try {
     }
 
     CustomerTM selectedCustomer = TableContextFull.getSelectionModel().getSelectedItem();
-            selectedCustomer.setTitle(String.valueOf(title));
-            selectedCustomer.setCusName(String.valueOf(name));
-            selectedCustomer.setAddress();
-            selectedCustomer.setTelNo(telNo);
-            selectedCustomer.setProvince(province);
-            selectedCustomer.setNic(nic);
+         selectedCustomer.setCusId(txtCustomerID.getText());
+            selectedCustomer.setTitle(txtMrMrs.getText());
+            selectedCustomer.setCusName(txtCustomerName.getText());
+            selectedCustomer.setAddress(txtCustomerAddress.getText());
+            selectedCustomer.setTelNo(txtTelNo.getText());
+            selectedCustomer.setProvince(txtCustomerProvince.getText());
+            selectedCustomer.setNic(txtNic.getText());
+
        /* CustomerDTO customer = new CustomerDTO(
                 txtCustomerID.getText(),
                 txtMrMrs.getText(),
@@ -233,7 +235,7 @@ try {
             new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
         }*/
         try {
-            customerBO.deleteCustomer(cusId);
+            customerBO.deleteCustomer(txtCustomerID.getText());
 
             TableContextFull.getItems().remove(TableContextFull.getSelectionModel().getSelectedItem());
             TableContextFull.getSelectionModel().clearSelection();

@@ -118,7 +118,7 @@ public class EmployeeFormController {
 
     //TODO complete 100%
     public void UpdateBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-       /* EmployeeDTO employee = new EmployeeDTO(
+        EmployeeDTO employee = new EmployeeDTO(
                 txtId.getText(),
                 txtName.getText(),
                 txtNic.getText(),
@@ -128,7 +128,7 @@ public class EmployeeFormController {
                 txtJobRole.getText()
         );
 
-        boolean isUpdated = crudUtil.execute("UPDATE employee SET name=? , nic=? , salary=? , telNo=? , address=? , jobRole=? WHERE empId=?",
+       /* boolean isUpdated = crudUtil.execute("UPDATE employee SET name=? , nic=? , salary=? , telNo=? , address=? , jobRole=? WHERE empId=?",
                 employee.getName(),
                 employee.getNic(),
                 employee.getSalary(),
@@ -146,7 +146,7 @@ public class EmployeeFormController {
             new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
         }*/
         try {
-            employeeBO.update(new EmployeeDTO(txtId.getText(), txtName.getText(), txtNic.getText(), salary.getLayoutY(), txtContact.getText(), txtAddress.getText(), txtJobRole.getText()));
+            employeeBO.update(new EmployeeDTO(txtId.getText(), txtName.getText(), txtNic.getText(), Double.parseDouble(salary.getText()), txtContact.getText(), txtAddress.getText(), txtJobRole.getText()));
 
             EmployeeTable.refresh();
         } catch (SQLException e) {
@@ -190,8 +190,8 @@ public class EmployeeFormController {
                 txtId.getText(),
                 txtName.getText(),
                 txtNic.getText(),
-                //Double.parseDouble(salary.getText()),
-                salary.getLayoutY(),
+                Double.parseDouble(salary.getText()),
+               // salary.getLayoutY(),
                 txtContact.getText(),
                 txtAddress.getText(),
                 txtJobRole.getText()
@@ -218,9 +218,9 @@ public class EmployeeFormController {
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }*/
-            employeeBO.add(new EmployeeDTO(txtId.getText(),txtName.getText(),txtNic.getText(),salary.getLayoutY(),txtContact.getText(),txtAddress.getText(),txtJobRole.getText()));
+            employeeBO.add(new EmployeeDTO(txtId.getText(),txtName.getText(),txtNic.getText(), Double.parseDouble(salary.getText()),txtContact.getText(),txtAddress.getText(),txtJobRole.getText()));
 
-            EmployeeTable.getItems().add(new EmployeeTM(txtId.getText(),txtName.getText(),txtNic.getText(),salary.getLayoutY(),txtContact.getText(),txtAddress.getText(),txtJobRole.getText()));
+            EmployeeTable.getItems().add(new EmployeeTM(txtId.getText(),txtName.getText(),txtNic.getText(), Double.parseDouble(salary.getText()),txtContact.getText(),txtAddress.getText(),txtJobRole.getText()));
 
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to save the employee " + e.getMessage()).show();
@@ -228,6 +228,7 @@ public class EmployeeFormController {
             e.printStackTrace();
         }
 
+        clearText();
         loadAllEmployee();
     }
 

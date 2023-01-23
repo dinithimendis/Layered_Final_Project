@@ -22,7 +22,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     @Override
     public boolean add(Employee entity) throws SQLException, ClassNotFoundException {
-        return crudUtil.execute("INSERT INTO Customer (id,name, address) VALUES (?,?,?)", entity.getEmpId(), entity.getName(), entity.getNic(), entity.getSalary(), entity.getTelNo(), entity.getAddress(), entity.getJobRole());
+        return crudUtil.execute(" INSERT INTO employee VALUES (?, ?, ?, ?, ?, ?, ?)", entity.getEmpId(), entity.getName(), entity.getNic(), entity.getSalary(), entity.getTelNo(), entity.getAddress(), entity.getJobRole());
     }
 
     @Override

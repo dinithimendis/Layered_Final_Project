@@ -71,7 +71,7 @@ public class EmployeeFormController {
             }
         });
 
-        map.put(txtId, Pattern.compile("^(E00-)[0-9]{1,4}$"));
+        map.put(txtId, Pattern.compile("^(E00-)[0-9]{1,5}$"));
         map.put(txtAddress, Pattern.compile("^[A-z]{4,15}$"));
         map.put(txtName, Pattern.compile("^[A-z ]{3,20}$"));
         map.put(txtJobRole, Pattern.compile("^[A-z]{4,15}$"));
@@ -180,6 +180,8 @@ public class EmployeeFormController {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        clearText();
+        loadAllEmployee();
     }
 
     //TODO complete 100%
@@ -188,7 +190,8 @@ public class EmployeeFormController {
                 txtId.getText(),
                 txtName.getText(),
                 txtNic.getText(),
-                Double.parseDouble(salary.getText()),
+                //Double.parseDouble(salary.getText()),
+                salary.getLayoutY(),
                 txtContact.getText(),
                 txtAddress.getText(),
                 txtJobRole.getText()
@@ -220,7 +223,7 @@ public class EmployeeFormController {
             EmployeeTable.getItems().add(new EmployeeTM(txtId.getText(),txtName.getText(),txtNic.getText(),salary.getLayoutY(),txtContact.getText(),txtAddress.getText(),txtJobRole.getText()));
 
         } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, "Failed to save the customer " + e.getMessage()).show();
+            new Alert(Alert.AlertType.ERROR, "Failed to save the employee " + e.getMessage()).show();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

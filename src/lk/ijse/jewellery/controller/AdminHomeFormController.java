@@ -19,7 +19,7 @@ public class AdminHomeFormController {
     public AnchorPane adminSideAnchorPane;
 
     /* go to employee form */
-    public void employeeBtnOnAction(ActionEvent actionEvent) throws IOException, NullPointerException {
+    public void employeeBtnOnAction(ActionEvent actionEvent) throws IOException {
         Navigation.AdminORCashierUI("EmployeeForm", adminSideAnchorPane);
     }
 

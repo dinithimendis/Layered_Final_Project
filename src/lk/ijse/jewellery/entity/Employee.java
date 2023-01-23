@@ -1,4 +1,4 @@
-package lk.ijse.jewellery.model;
+package lk.ijse.jewellery.entity;
 
 import lombok.*;
 
@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @ToString
 @EqualsAndHashCode
+
 public class Employee {
     private String empId;
     private String name;
@@ -16,5 +17,4 @@ public class Employee {
     private String telNo;
     private String address;
     private String jobRole;
-
 }

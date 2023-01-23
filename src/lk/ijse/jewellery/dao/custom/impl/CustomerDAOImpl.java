@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class CustomerDAOImpl implements CustomerDAO {
     @Override
-    public ArrayList<Customer> loadAllCustomers() throws SQLException, ClassNotFoundException {
+    public ArrayList<Customer> getAll() throws SQLException, ClassNotFoundException {
         ArrayList<Customer> allCustomers = new ArrayList<>();
         ResultSet result = crudUtil.execute("SELECT * FROM customer");
 
@@ -25,7 +25,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public boolean loadAllCustomers(Customer entity) throws SQLException, ClassNotFoundException {
+    public boolean add(Customer entity) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?, ?)", entity.getCusId(), entity.getTitle(), entity.getCusName(), entity.getAddress(), entity.getTelNo(), entity.getProvince(), entity.getNic());
     }
 
@@ -38,4 +38,11 @@ public class CustomerDAOImpl implements CustomerDAO {
     public boolean delete(String cusId) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("DELETE FROM customer WHERE cusId=?", cusId);
     }
+
+  /*  @Override
+    public Customer search(String cusId) throws SQLException, ClassNotFoundException {
+        ResultSet rst = crudUtil.execute("SELECT * FROM Customer WHERE id=?", cusId + "");
+        rst.next();
+        return new Customer(cusId + "",rst.getString("title"), rst.getString("name"), rst.getString("address"), rst.getString("telNo"), rst.getString("province"), rst.getString("nic") );
+    }*/
 }

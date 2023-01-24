@@ -1,8 +1,6 @@
 package lk.ijse.jewellery.controller;
 
 import com.jfoenix.controls.JFXButton;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -10,28 +8,31 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.jewellery.model.Item;
-import lk.ijse.jewellery.util.Navigation;
-import lk.ijse.jewellery.util.NotificationController;
+import lk.ijse.jewellery.bo.BOFactory;
+import lk.ijse.jewellery.bo.custom.ItemBO;
 import lk.ijse.jewellery.dao.crudUtil;
+import lk.ijse.jewellery.model.ItemDTO;
+import lk.ijse.jewellery.util.Navigation;
 import lk.ijse.jewellery.util.validationUtil;
+import lk.ijse.jewellery.view.tm.ItemTM;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.regex.Pattern;
 
 public class ItemFormController {
     public AnchorPane ManagerItemDetailContext;
     public JFXButton SaveButton;
-    public TableView<Item> FullTable;
-    public TableColumn<Item, String> ItemTableCol;
-    public TableColumn<Item, String> DescriptionCol;
-    public TableColumn<Item, String> QtyCol;
-    public TableColumn<Item, String> unitPriceCol;
-    public TableColumn<Item, String> categoryCol;
-    public TableColumn<Item, String> typeCol;
+    public TableView<ItemTM> FullTable;
+    public TableColumn<ItemDTO, String> ItemTableCol;
+    public TableColumn<ItemDTO, String> DescriptionCol;
+    public TableColumn<ItemDTO, String> QtyCol;
+    public TableColumn<ItemDTO, String> unitPriceCol;
+    public TableColumn<ItemDTO, String> categoryCol;
+    public TableColumn<ItemDTO, String> typeCol;
     public Label dateLabel;
     public Label TimeLabel;
     public TextField txtCategory;
@@ -41,6 +42,7 @@ public class ItemFormController {
     public TextField txtType;
     public TextField txtItemCode;
 
+    ItemBO itemBO = (ItemBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.ITEM);
     LinkedHashMap<TextField, Pattern> map = new LinkedHashMap<>();
 
     public void initialize() {
@@ -59,7 +61,7 @@ public class ItemFormController {
         SaveButton.setOnMouseClicked(event -> {
             try {
                 saveOnAction();
-            } catch (SQLException | ClassNotFoundException ignored) {
+            } catch (SQLException | ClassNotFoundException | NumberFormatException ignored) {
             }
         });
 
@@ -73,7 +75,7 @@ public class ItemFormController {
 
     /* save item */
     public void saveOnAction() throws SQLException, ClassNotFoundException {
-        String itemCode = txtItemCode.getText();
+       /* String itemCode = txtItemCode.getText();
         String description = txtDescription.getText();
         String category = txtCategory.getText();
         int qty = Integer.parseInt(txtQty.getText());
@@ -104,19 +106,40 @@ public class ItemFormController {
                 new Alert(Alert.AlertType.WARNING, "Something happened!").show();
             }
         } catch (SQLException | ClassNotFoundException ignored) {
+        }*/
+        try {
+
+            itemBO.add(new ItemDTO(
+                    txtItemCode.getText(),
+                    txtDescription.getText(),
+                    txtCategory.getText(),
+                    Integer.parseInt(txtQty.getText()),
+                    Double.parseDouble(txtUnitPrice.getText()),
+                    txtType.getText()));
+
+            FullTable.getItems().add(new ItemTM(
+                    txtItemCode.getText(),
+                    txtDescription.getText(),
+                    txtCategory.getText(),
+                    Integer.parseInt(txtQty.getText()),
+                    Double.parseDouble(txtUnitPrice.getText()),
+                    txtType.getText()));
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            loadAllItems();
+            clearTextField();
         }
-        loadAllItems();
-        clearTextField();
     }
 
     /* load all items */
     private void loadAllItems() throws SQLException, ClassNotFoundException {
-        ResultSet resultSet =  crudUtil.execute("SELECT * FROM item");
-        ObservableList<Item> obList = FXCollections.observableArrayList();
+      /*  ResultSet resultSet =  crudUtil.execute("SELECT * FROM item");
+        ObservableList<ItemDTO> obList = FXCollections.observableArrayList();
 
         while (resultSet.next()) {
             obList.add(
-                    new Item(
+                    new ItemDTO(
                             resultSet.getString("itemCode"),
                             resultSet.getString("description"),
                             resultSet.getString("category"),
@@ -125,14 +148,34 @@ public class ItemFormController {
                             resultSet.getString("type")
                     ));
         }
-        FullTable.setItems(obList);
+      //  FullTable.setItems(obList);
+        FullTable.refresh();*/
+        FullTable.getItems().clear();
+        try {
+            ArrayList<ItemDTO> allEmployees = itemBO.getAll();
+
+            for (ItemDTO e : allEmployees) {
+                FullTable.getItems().add(new ItemTM(
+                        e.getItemCode(),
+                        e.getDescription(),
+                        e.getCategory(),
+                        e.getQty(),
+                        e.getUnitPrice(),
+                        e.getType()));
+            }
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+        } catch (ClassNotFoundException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+        }
+
         FullTable.refresh();
     }
 
     /* update item */
     public void UpdateButtonOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
 
-        Item item = new Item(
+        /*ItemDTO item = new ItemDTO(
                 txtItemCode.getText(),
                 txtDescription.getText(),
                 txtCategory.getText(),
@@ -156,12 +199,29 @@ public class ItemFormController {
             loadAllItems();
         } else {
             new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
+        }*/
+        try {
+            itemBO.update(new ItemDTO(
+                    txtItemCode.getText(),
+                    txtDescription.getText(),
+                    txtCategory.getText(),
+                    Integer.parseInt(txtQty.getText()),
+                    Double.parseDouble(txtUnitPrice.getText()),
+                    txtType.getText()));
+
+            FullTable.refresh();
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "Failed to update the item " + txtItemCode + e.getMessage()).show();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        loadAllItems();
+        clearTextField();
     }
 
     /* delete item */
     public void DeleteBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-        boolean isDeleted = crudUtil.execute("DELETE FROM item WHERE itemCode=?", txtItemCode.getText());
+       /* boolean isDeleted = crudUtil.execute("DELETE FROM item WHERE itemCode=?", txtItemCode.getText());
 
         if (isDeleted) {
             NotificationController.detailsRemoved();
@@ -169,7 +229,20 @@ public class ItemFormController {
             clearTextField();
         } else {
             new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
+        }*/
+        try {
+            itemBO.delete(txtItemCode.getText());
+
+            FullTable.getItems().remove(FullTable.getSelectionModel().getSelectedItem());
+            FullTable.getSelectionModel().clearSelection();
+
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "Failed to delete the item " + txtItemCode).show();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        clearTextField();
+        loadAllItems();
     }
 
     /* clearing text fields */

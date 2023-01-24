@@ -24,12 +24,26 @@ public class EmployeeBOImpl implements EmployeeBO {
 
     @Override
     public boolean add(EmployeeDTO dto) throws SQLException, ClassNotFoundException {
-        return employeeDAO.add(new Employee(dto.getEmpId(),dto.getName(),dto.getNic(),dto.getSalary(),dto.getTelNo(),dto.getAddress(), dto.getJobRole()));
+        return employeeDAO.add(new Employee(
+                dto.getEmpId(),
+                dto.getName(),
+                dto.getNic(),
+                dto.getSalary(),
+                dto.getTelNo(),
+                dto.getAddress(),
+                dto.getJobRole()));
     }
 
     @Override
     public boolean update(EmployeeDTO dto) throws SQLException, ClassNotFoundException {
-        return employeeDAO.update(new Employee(dto.getEmpId(),dto.getName(),dto.getNic(),dto.getSalary(),dto.getTelNo(),dto.getAddress(), dto.getJobRole()));
+        return employeeDAO.update(new Employee(
+                dto.getEmpId(),
+                dto.getName(),
+                dto.getNic(),
+                dto.getSalary(),
+                dto.getTelNo(),
+                dto.getAddress(),
+                dto.getJobRole()));
     }
 
     @Override

@@ -14,7 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import lk.ijse.jewellery.db.DBConnection;
 import lk.ijse.jewellery.model.CustomerDTO;
-import lk.ijse.jewellery.model.Item;
+import lk.ijse.jewellery.model.ItemDTO;
 import lk.ijse.jewellery.model.Order;
 import lk.ijse.jewellery.model.OrderDetails;
 import lk.ijse.jewellery.util.Navigation;
@@ -159,7 +159,7 @@ public class PlaceOrderFormController {
         try {
 
             //TODO -------------------------------------------------
-            Item i = getItem(selectedItemCode);
+            ItemDTO i = getItem(selectedItemCode);
             if (i != null) {
                 DescriptionTxt.setText(i.getDescription());
                 QtyOnHandTxt.setText(String.valueOf((i.getQty())));
@@ -371,7 +371,7 @@ public class PlaceOrderFormController {
             count = (Integer.parseInt(QtyOnHandTxt.getText()) - Integer.parseInt(QtyTxt.getText()));
             QtyOnHandTxt.setText(Integer.toString(count));
 
-            Item it = new Item();
+            ItemDTO it = new ItemDTO();
             it.setQty(count);
 
 
@@ -406,10 +406,10 @@ public class PlaceOrderFormController {
         return codeList;
     }
 
-    public static Item getItem(String code) throws SQLException, ClassNotFoundException {
+    public static ItemDTO getItem(String code) throws SQLException, ClassNotFoundException {
         ResultSet result = crudUtil.execute("SELECT * FROM item WHERE itemCode=?", code);
         if (result.next()) {
-            return new Item(
+            return new ItemDTO(
                     result.getString(1),
                     result.getString(2),
                     result.getString(3),

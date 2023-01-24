@@ -158,27 +158,20 @@ public class CustomerFormController {
         String province = txtCustomerProvince.getText();
         String nic = txtNic.getText();
 
-
-        // CustomerDTO customer = new CustomerDTO(id, title, name, address, telNo, province, nic);
-        // String sql = "INSERT INTO customer VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        // customerBO.addCustomer(new CustomerDTO(id, title, name, address, telNo, province, nic));
-
-        //  TableContextFull.getItems().add(new CustomerTM(id, title, name, address, telNo, province, nic));
-
         try {
-            /* boolean isAdded = crudUtil.execute(sql,
-                    customer.getCusId(),
-                    customer.getTitle(),
-                    customer.getCusName(),
-                    customer.getAddress(),
-                    customer.getTelNo(),
-                    customer.getProvince(),
-                    customer.getNic()
-            );*/
-            customerBO.add(new CustomerDTO(id, title, name, address, telNo, province, nic));
 
-            TableContextFull.getItems().add(new CustomerTM(id, title, name, address, telNo, province, nic));
+            customerBO.add(new CustomerDTO(
+                    id,
+                    title,
+                    name,
+                    address,
+                    telNo, province, nic));
+
+            TableContextFull.getItems().add(
+                    new CustomerTM(id,
+                            title, name,
+                            address, telNo,
+                            province, nic));
 
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to save the customer " + e.getMessage()).show();

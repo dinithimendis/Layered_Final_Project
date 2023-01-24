@@ -2,6 +2,7 @@ package lk.ijse.jewellery.dao;
 
 import lk.ijse.jewellery.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.jewellery.dao.custom.impl.EmployeeDAOImpl;
+import lk.ijse.jewellery.dao.custom.impl.ItemDAOImpl;
 
 public class DAOFactory {
     private static DAOFactory daoFactory;
@@ -14,7 +15,7 @@ public class DAOFactory {
     }
 
     public enum DAOTypes {
-        CUSTOMER,EMPLOYEE
+        CUSTOMER,EMPLOYEE,ITEM
     }
 
     public SuperDAO getDAO(DAOTypes types){
@@ -23,6 +24,8 @@ public class DAOFactory {
                 return new CustomerDAOImpl();
             case EMPLOYEE:
                 return new EmployeeDAOImpl();
+            case ITEM:
+                return new ItemDAOImpl();
             default:
                 return null;
         }

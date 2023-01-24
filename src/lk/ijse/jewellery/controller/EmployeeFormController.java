@@ -9,15 +9,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import lk.ijse.jewellery.bo.BOFactory;
-import lk.ijse.jewellery.bo.custom.CustomerBO;
 import lk.ijse.jewellery.bo.custom.EmployeeBO;
-import lk.ijse.jewellery.model.CustomerDTO;
+import lk.ijse.jewellery.dao.crudUtil;
 import lk.ijse.jewellery.model.EmployeeDTO;
 import lk.ijse.jewellery.util.Navigation;
-import lk.ijse.jewellery.util.NotificationController;
-import lk.ijse.jewellery.dao.crudUtil;
 import lk.ijse.jewellery.util.validationUtil;
-import lk.ijse.jewellery.view.tm.CustomerTM;
 import lk.ijse.jewellery.view.tm.EmployeeTM;
 
 import java.io.IOException;
@@ -64,10 +60,19 @@ public class EmployeeFormController {
         } catch (SQLException | ClassNotFoundException ignored) {
         }
 
+
+
         btnSaveEmployee.setOnMouseClicked(event -> {
             try {
+
+                //TODO check this = numberFormatException
                 saveOnAction();
-            } catch (SQLException | ClassNotFoundException ignored) {
+
+            } catch (SQLException | ClassNotFoundException | NumberFormatException ignored) {
+
+
+            //} catch (SQLException | ClassNotFoundException ignored) {
+
             }
         });
 
@@ -176,7 +181,7 @@ public class EmployeeFormController {
             EmployeeTable.getSelectionModel().clearSelection();
 
         } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, "Failed to delete the customer " + txtId).show();
+            new Alert(Alert.AlertType.ERROR, "Failed to delete the employee " + txtId).show();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -186,46 +191,41 @@ public class EmployeeFormController {
 
     //TODO complete 100%
     public void saveOnAction() throws SQLException, ClassNotFoundException {
-       EmployeeDTO employee = new EmployeeDTO(
+     /*   EmployeeDTO employee = new EmployeeDTO(
                 txtId.getText(),
                 txtName.getText(),
                 txtNic.getText(),
                 Double.parseDouble(salary.getText()),
-               // salary.getLayoutY(),
+                // salary.getLayoutY(),
                 txtContact.getText(),
                 txtAddress.getText(),
                 txtJobRole.getText()
 
-        );
+        );*/
         try {
-           /* String sql = "INSERT INTO employee VALUES (?, ?, ?, ?, ?, ?, ?)";
-            boolean isAdded = crudUtil.execute(sql,
-                    employee.getEmpId(),
-                    employee.getName(),
-                    employee.getNic(),
-                    employee.getSalary(),
-                    employee.getTelNo(),
-                    employee.getAddress(),
-                    employee.getJobRole()
-            );
 
-            if (isAdded) {
-                new Alert(Alert.AlertType.CONFIRMATION, "Employee Added!").show();
-                clearText();
-            } else {
-                new Alert(Alert.AlertType.WARNING, "Something happened!").show();
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }*/
-            employeeBO.add(new EmployeeDTO(txtId.getText(),txtName.getText(),txtNic.getText(), Double.parseDouble(salary.getText()),txtContact.getText(),txtAddress.getText(),txtJobRole.getText()));
+            employeeBO.add(new EmployeeDTO(
+                    txtId.getText(),
+                    txtName.getText(),
+                    txtNic.getText(),
+                    Double.parseDouble(salary.getText()),
+                    txtContact.getText(),
+                    txtAddress.getText(),
+                    txtJobRole.getText()));
 
-            EmployeeTable.getItems().add(new EmployeeTM(txtId.getText(),txtName.getText(),txtNic.getText(), Double.parseDouble(salary.getText()),txtContact.getText(),txtAddress.getText(),txtJobRole.getText()));
+            EmployeeTable.getItems().add(new EmployeeTM(
+                    txtId.getText(),
+                    txtName.getText(),
+                    txtNic.getText(),
+                    Double.parseDouble(salary.getText()),
+                    txtContact.getText(),
+                    txtAddress.getText(),
+                    txtJobRole.getText()));
 
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException ignored) {
+/*
             new Alert(Alert.AlertType.ERROR, "Failed to save the employee " + e.getMessage()).show();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+*/
         }
 
         clearText();

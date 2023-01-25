@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class Supplier {
+public class SupplierDTO {
     private String supId;
     private String name;
     private String nic;

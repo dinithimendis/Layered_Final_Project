@@ -10,28 +10,35 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.jewellery.model.Supplier;
+import lk.ijse.jewellery.bo.BOFactory;
+import lk.ijse.jewellery.bo.custom.ItemBO;
+import lk.ijse.jewellery.bo.custom.SupplierBO;
+import lk.ijse.jewellery.model.ItemDTO;
+import lk.ijse.jewellery.model.SupplierDTO;
 import lk.ijse.jewellery.util.Navigation;
 import lk.ijse.jewellery.util.NotificationController;
 import lk.ijse.jewellery.dao.crudUtil;
 import lk.ijse.jewellery.util.validationUtil;
+import lk.ijse.jewellery.view.tm.ItemTM;
+import lk.ijse.jewellery.view.tm.SupplierTM;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.regex.Pattern;
 
 public class SupplierFormController {
 
     public Button btnSave;
-    public TableColumn<Supplier, String> CashierIdCol;
-    public TableColumn<Supplier, String> CashierNameCol;
-    public TableColumn<Supplier, String> nicCol;
-    public TableColumn<Supplier, String> AddressCol;
-    public TableColumn<Supplier, String> ContactCol;
-    public TableColumn<Supplier, String> companyName;
-    public TableView<Supplier> SupplierTable;
+    public TableColumn<SupplierDTO, String> CashierIdCol;
+    public TableColumn<SupplierDTO, String> CashierNameCol;
+    public TableColumn<SupplierDTO, String> nicCol;
+    public TableColumn<SupplierDTO, String> AddressCol;
+    public TableColumn<SupplierDTO, String> ContactCol;
+    public TableColumn<SupplierDTO, String> companyName;
+    public TableView<SupplierTM> SupplierTable;
     public AnchorPane SupplierAnchorPane;
     public TextField companyTxt;
     public TextField ContactTxt;
@@ -39,6 +46,8 @@ public class SupplierFormController {
     public TextField NameTxt;
     public TextField idTxt;
     public TextField Address;
+
+    SupplierBO supplierBO = (SupplierBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.SUPPLIER);
 
     LinkedHashMap<TextField, Pattern> map = new LinkedHashMap<>();
 
@@ -66,12 +75,12 @@ public class SupplierFormController {
 
     /* load all supplier details */
     private void loadAllSuppliers() throws SQLException, ClassNotFoundException {
-        ResultSet result = crudUtil.execute("SELECT * FROM supplier");
-        ObservableList<Supplier> obList = FXCollections.observableArrayList();
+       /* ResultSet result = crudUtil.execute("SELECT * FROM supplier");
+        ObservableList<SupplierDTO> obList = FXCollections.observableArrayList();
 
         while (result.next()) {
             obList.add(
-                    new Supplier(
+                    new SupplierDTO(
                             result.getString("supId"),
                             result.getString("name"),
                             result.getString("nic"),
@@ -81,12 +90,30 @@ public class SupplierFormController {
                     ));
         }
         SupplierTable.setItems(obList);
+        SupplierTable.refresh();*/
+        SupplierTable.getItems().clear();
+        try {
+            ArrayList<SupplierDTO> allSuppliers = supplierBO.getAll();
+
+            for (SupplierDTO s : allSuppliers) {
+                SupplierTable.getItems().add(new SupplierTM(
+                        s.getSupId(),
+                        s.getName(),
+                        s.getNic(),
+                        s.getAddress(),
+                        s.getTelNo(),
+                        s.getCompanyName()));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+        }
+
         SupplierTable.refresh();
     }
 
     /* save supplier details */
     public void saveOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-        String address = Address.getText();
+      /*  String address = Address.getText();
         String company = companyTxt.getText();
         String contact = ContactTxt.getText();
         String nic = NicTxt.getText();
@@ -94,7 +121,7 @@ public class SupplierFormController {
         String id = idTxt.getText();
 
 
-        Supplier supplier = new Supplier(
+        SupplierDTO supplier = new SupplierDTO(
                 id,
                 name,
                 nic,
@@ -123,6 +150,29 @@ public class SupplierFormController {
             throw new RuntimeException(e);
         }
         loadAllSuppliers();
+        clearText(); */
+        try {
+
+            supplierBO.add(new SupplierDTO(
+                    idTxt.getText(),
+                    NameTxt.getText(),
+                    NicTxt.getText(),
+                    Address.getText(),
+                    ContactTxt.getText(),
+                    companyTxt.getText()));
+
+            SupplierTable.getItems().add(new SupplierTM(
+                    idTxt.getText(),
+                    NameTxt.getText(),
+                    NicTxt.getText(),
+                    Address.getText(),
+                    ContactTxt.getText(),
+                    companyTxt.getText()));
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        loadAllSuppliers();
         clearText();
     }
 
@@ -139,7 +189,7 @@ public class SupplierFormController {
     /* update supplier details */
     public void UpdateBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
 
-        Supplier supplier = new Supplier(
+       /* SupplierDTO supplier = new SupplierDTO(
                 idTxt.getText(),
                 NameTxt.getText(),
                 NicTxt.getText(),
@@ -163,12 +213,27 @@ public class SupplierFormController {
             loadAllSuppliers();
         } else {
             new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
+        }*/
+        try {
+            supplierBO.update(new SupplierDTO(
+                    idTxt.getText(),
+                    NameTxt.getText(),
+                    NicTxt.getText(),
+                    Address.getText(),
+                    ContactTxt.getText(),
+                    companyTxt.getText()));
+
+
+        } catch (SQLException | ClassNotFoundException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
+        loadAllSuppliers();
+        clearText();
     }
 
     /* removing supplier details */
     public void RemoveBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-        boolean isDeleted = crudUtil.execute("DELETE FROM supplier WHERE supId=?", idTxt.getText());
+      /*  boolean isDeleted = crudUtil.execute("DELETE FROM supplier WHERE supId=?", idTxt.getText());
 
         if (isDeleted) {
             NotificationController.detailsRemoved();
@@ -176,7 +241,20 @@ public class SupplierFormController {
             loadAllSuppliers();
         } else {
             new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
+        }*/
+        try {
+            supplierBO.delete(idTxt.getText());
+
+            SupplierTable.getItems().remove(SupplierTable.getSelectionModel().getSelectedItem());
+            SupplierTable.getSelectionModel().clearSelection();
+
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "Failed to delete the supplier " + idTxt).show();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        clearText();
+        loadAllSuppliers();
     }
 
     /* removing text fields animations  */
@@ -200,6 +278,7 @@ public class SupplierFormController {
 
     }
 
+    //do..................................................................................
     /* search supplier */
     public void searchOnAction(MouseEvent mouseEvent) throws SQLException, ClassNotFoundException {
         ResultSet resultSet = crudUtil.execute("SELECT * FROM supplier WHERE supId=?", idTxt.getText());

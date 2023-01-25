@@ -153,9 +153,9 @@ public class ItemFormController {
         FullTable.refresh();*/
         FullTable.getItems().clear();
         try {
-            ArrayList<ItemDTO> allEmployees = itemBO.getAll();
+            ArrayList<ItemDTO> allItems = itemBO.getAll();
 
-            for (ItemDTO e : allEmployees) {
+            for (ItemDTO e : allItems) {
                 FullTable.getItems().add(new ItemTM(
                         e.getItemCode(),
                         e.getDescription(),

@@ -45,7 +45,7 @@ public class ItemFormController {
     ItemBO itemBO = (ItemBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.ITEM);
     LinkedHashMap<TextField, Pattern> map = new LinkedHashMap<>();
 
-    public void initialize() {
+    public void initialize() throws SQLException, ClassNotFoundException {
         ItemTableCol.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
         DescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         QtyCol.setCellValueFactory(new PropertyValueFactory<>("qty"));
@@ -53,10 +53,11 @@ public class ItemFormController {
         categoryCol.setCellValueFactory(new PropertyValueFactory<>("category"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        try {
+       // try {
             loadAllItems();
-        } catch (SQLException | ClassNotFoundException ignored) {
-        }
+
+       // } catch (SQLException | ClassNotFoundException ignored) {
+      //  }
 
         SaveButton.setOnMouseClicked(event -> {
             try {
@@ -127,9 +128,9 @@ public class ItemFormController {
 
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            loadAllItems();
-            clearTextField();
         }
+        loadAllItems();
+        clearTextField();
     }
 
     /* load all items */
@@ -163,9 +164,7 @@ public class ItemFormController {
                         e.getUnitPrice(),
                         e.getType()));
             }
-        } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
 
@@ -200,6 +199,7 @@ public class ItemFormController {
         } else {
             new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
         }*/
+      //  FullTable.getSelectionModel().clearSelection();
         try {
             itemBO.update(new ItemDTO(
                     txtItemCode.getText(),
@@ -209,12 +209,14 @@ public class ItemFormController {
                     Double.parseDouble(txtUnitPrice.getText()),
                     txtType.getText()));
 
-            FullTable.refresh();
-        } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, "Failed to update the item " + txtItemCode + e.getMessage()).show();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+           // new Alert(Alert.AlertType.ERROR, "Failed to update the item " + txtItemCode + e.getMessage()).show();
+        } //catch (ClassNotFoundException e) {
+         // e.printStackTrace();
+      //  }
+      //  FullTable.refresh();
         loadAllItems();
         clearTextField();
     }
@@ -230,6 +232,7 @@ public class ItemFormController {
         } else {
             new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
         }*/
+
         try {
             itemBO.delete(txtItemCode.getText());
 

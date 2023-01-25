@@ -1,13 +1,9 @@
 package lk.ijse.jewellery.bo.custom.impl;
 
-import lk.ijse.jewellery.bo.custom.EmployeeBO;
 import lk.ijse.jewellery.bo.custom.ItemBO;
 import lk.ijse.jewellery.dao.DAOFactory;
-import lk.ijse.jewellery.dao.custom.EmployeeDAO;
 import lk.ijse.jewellery.dao.custom.ItemDAO;
-import lk.ijse.jewellery.entity.Employee;
 import lk.ijse.jewellery.entity.Item;
-import lk.ijse.jewellery.model.EmployeeDTO;
 import lk.ijse.jewellery.model.ItemDTO;
 
 import java.sql.SQLException;

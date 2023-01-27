@@ -4,6 +4,7 @@ import lk.ijse.jewellery.bo.SuperBO;
 import lk.ijse.jewellery.model.EmployeeDTO;
 import lk.ijse.jewellery.model.ItemDTO;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -15,4 +16,5 @@ public interface ItemBO extends SuperBO {
     public boolean update(ItemDTO dto) throws SQLException, ClassNotFoundException ;
 
     public boolean delete(String id) throws SQLException, ClassNotFoundException;
+    ResultSet search(String text) throws SQLException, ClassNotFoundException;
 }

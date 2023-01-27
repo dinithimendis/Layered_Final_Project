@@ -12,11 +12,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
+import lk.ijse.jewellery.bo.BOFactory;
+import lk.ijse.jewellery.bo.custom.PlaceOrderBO;
 import lk.ijse.jewellery.db.DBConnection;
 import lk.ijse.jewellery.model.CustomerDTO;
 import lk.ijse.jewellery.model.ItemDTO;
-import lk.ijse.jewellery.model.Order;
-import lk.ijse.jewellery.model.OrderDetails;
+import lk.ijse.jewellery.model.OrderDTO;
+import lk.ijse.jewellery.model.OrderDetailsDTO;
 import lk.ijse.jewellery.util.Navigation;
 import lk.ijse.jewellery.util.NotificationController;
 import lk.ijse.jewellery.dao.crudUtil;
@@ -55,12 +57,12 @@ public class PlaceOrderFormController {
     public ComboBox<String> ItemCodeCombo;
     public Label OrderID;
     public TableView<CartTM> PlaceOrderTbl;
-    public TableColumn<OrderDetails, String> OrderIDCol;
-    public TableColumn<OrderDetails, String> ItemCodeCol;
-    public TableColumn<OrderDetails, String> QtyCol;
-    public TableColumn<OrderDetails, String> UnitPriceCol;
-    public TableColumn<OrderDetails, String> DiscountCol;
-    public TableColumn<OrderDetails, String> TotalCol;
+    public TableColumn<OrderDetailsDTO, String> OrderIDCol;
+    public TableColumn<OrderDetailsDTO, String> ItemCodeCol;
+    public TableColumn<OrderDetailsDTO, String> QtyCol;
+    public TableColumn<OrderDetailsDTO, String> UnitPriceCol;
+    public TableColumn<OrderDetailsDTO, String> DiscountCol;
+    public TableColumn<OrderDetailsDTO, String> TotalCol;
     public JFXButton RemoveBtn;
     public Label TotalLbl;
     public Label DateLbl;
@@ -69,6 +71,8 @@ public class PlaceOrderFormController {
     public int count;
     int cartSelectedRowForRemove = -1;
     ObservableList<CartTM> tmList = FXCollections.observableArrayList();
+
+   PlaceOrderBO placeOrderBO  = (PlaceOrderBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.PO);
 
     public void initialize() {
 
@@ -209,11 +213,11 @@ public class PlaceOrderFormController {
 
     /* conforming orders */
     public void ConfirmOrderOnAction() {
-        ArrayList<OrderDetails> details = new ArrayList();
+        ArrayList<OrderDetailsDTO> details = new ArrayList();
         for (CartTM tm : tmList
         ) {
             details.add(
-                    new OrderDetails(
+                    new OrderDetailsDTO(
                             tm.getOrderId(),
                             tm.getItemCode(),
                             tm.getQty(), tm.getTotal(),
@@ -222,7 +226,7 @@ public class PlaceOrderFormController {
             tm.getItemCode();
 
         }
-        Order order = new Order(
+        OrderDTO order = new OrderDTO(
                 OrderID.getText(),
                 CustomerIDCombo.getValue(),
                 DateLbl.getText(),

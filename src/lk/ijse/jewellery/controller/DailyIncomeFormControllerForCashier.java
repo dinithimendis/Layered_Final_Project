@@ -51,6 +51,7 @@ public class DailyIncomeFormControllerForCashier implements Initializable {
     /**
      * load all reports details
      */
+    // TOdo......................................
     private ObservableList<IncomeReport> loadDailyIncomeReport() throws SQLException, ClassNotFoundException {
         ResultSet resultSet = DBConnection.getInstance().getConnection().prepareStatement("SELECT `order`.OrderDate,count(`order`.orderId),sum(orderDetails.totalAmount) FROM `order` INNER JOIN orderDetails ON `order`.orderId = orderDetails.orderId GROUP BY OrderDate").executeQuery();
         ObservableList<IncomeReport> obList = FXCollections.observableArrayList();
@@ -72,6 +73,7 @@ public class DailyIncomeFormControllerForCashier implements Initializable {
     /**
      * calculate item count
      */
+    // TOdo......................................
     private ArrayList<IncomeReport> getCountItems() throws SQLException, ClassNotFoundException {
         ResultSet rest = DBConnection.getInstance().getConnection().prepareStatement("SELECT DISTINCT(`order`.OrderDate),sum(orderDetails.OrderQty) FROM `Order` INNER JOIN orderDetails ON  `order`.orderId = orderDetails.orderId GROUP BY `order`.OrderDate").executeQuery();
         ArrayList<IncomeReport> temp = new ArrayList<>();

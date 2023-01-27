@@ -53,7 +53,7 @@ public class CustomerFormController {
 
     CustomerBO customerBO = (CustomerBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.CUSTOMER);
 
-    //do......................................
+    // TOdo......................................
     public static ArrayList<String> getCustomerIds() throws SQLException, ClassNotFoundException {
         ResultSet result = crudUtil.execute("SELECT cusId FROM customer");
         ArrayList<String> ids = new ArrayList<>();
@@ -63,7 +63,7 @@ public class CustomerFormController {
         return ids;
     }
 
-    //do......................................
+    // TOdo......................................
     public static CustomerDTO getCustomer(String id) throws SQLException, ClassNotFoundException {
         ResultSet result = crudUtil.execute("SELECT * FROM customer WHERE cusId=?", id);
         if (result.next()) {
@@ -90,10 +90,7 @@ public class CustomerFormController {
         NIC.setCellValueFactory(new PropertyValueFactory<>("nic"));
 
         /* load all customers in to the table */
-        // try {
         loadAllCustomers();
-        //  } catch (SQLException | ClassNotFoundException ignored) {
-        // }
 
         CustomerSaveButton.setOnMouseClicked(event -> {
             try {
@@ -131,7 +128,7 @@ public class CustomerFormController {
     private void loadAllCustomers() {
         TableContextFull.getItems().clear();
         try {
-            ArrayList<CustomerDTO> allCustomers = customerBO.getAllCustomers();
+            ArrayList<CustomerDTO> allCustomers = customerBO.getAll();
 
             for (CustomerDTO c : allCustomers) {
                 TableContextFull.getItems().add(new CustomerTM(c.getCusId(), c.getTitle(), c.getCusName(), c.getAddress(), c.getTelNo(), c.getProvince(), c.getNic()));
@@ -143,9 +140,6 @@ public class CustomerFormController {
         }
 
         TableContextFull.refresh();
-
-        //TableContextFull.setItems();
-
     }
 
     /* save customer */
@@ -165,7 +159,9 @@ public class CustomerFormController {
                     title,
                     name,
                     address,
-                    telNo, province, nic));
+                    telNo,
+                    province,
+                    nic));
 
             TableContextFull.getItems().add(
                     new CustomerTM(id,
@@ -174,19 +170,12 @@ public class CustomerFormController {
                             province, nic));
 
         } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR, "Failed to save the customer " + e.getMessage()).show();
+            new Alert(Alert.AlertType.ERROR,
+                    "Failed to save the customer " + e.getMessage()).show();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-            /*if (isAdded) {
-                new Alert(Alert.AlertType.CONFIRMATION, "Customer Added!").show();
-            } else {
-                new Alert(Alert.AlertType.WARNING, "Something happened!").show();
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }*/
         loadAllCustomers();
         clearText();
     }
@@ -194,7 +183,7 @@ public class CustomerFormController {
     /* update customer */
     public void UpdateBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
         try {
-            customerBO.updateCustomer(new CustomerDTO(txtCustomerID.getText(), txtMrMrs.getText(), txtCustomerName.getText(), txtCustomerAddress.getText(), txtTelNo.getText(), txtCustomerProvince.getText(), txtNic.getText()));
+            customerBO.update(new CustomerDTO(txtCustomerID.getText(), txtMrMrs.getText(), txtCustomerName.getText(), txtCustomerAddress.getText(), txtTelNo.getText(), txtCustomerProvince.getText(), txtNic.getText()));
 
             TableContextFull.refresh();
         } catch (SQLException e) {
@@ -202,52 +191,15 @@ public class CustomerFormController {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-
-
-       /* CustomerDTO customer = new CustomerDTO(
-                txtCustomerID.getText(),
-                txtMrMrs.getText(),
-                txtCustomerName.getText(),
-                txtCustomerAddress.getText(),
-                txtTelNo.getText(),
-                txtCustomerProvince.getText(),
-                txtNic.getText()
-        );*/
-
-       /* boolean isUpdated = crudUtil.execute("UPDATE customer SET title=? , cusName=? , address=? , telNo=? , province=? , nic=? WHERE cusId=?",
-                customer.getTitle(),
-                customer.getCusName(),
-                customer.getAddress(),
-                customer.getTelNo(),
-                customer.getProvince(),
-                customer.getNic(),
-                customer.getCusId()
-        );*/
-
-        // if (isUpdated) {
-        //   new Alert(Alert.AlertType.CONFIRMATION, "Customer Details Updated !").show();
         clearText();
         loadAllCustomers();
-        //} else {
-        //  new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
-        // }
-
     }
 
     /* delete customer */
     public void DeleteBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-        /*boolean isDeleted =crudUtil.execute("DELETE FROM customer WHERE cusId=?", txtCustomerID.getText());
 
-        if (isDeleted) {
-            clearText();
-            loadAllCustomers();
-            NotificationController.detailsRemoved();
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
-        }*/
         try {
-            customerBO.deleteCustomer(txtCustomerID.getText());
+            customerBO.delete(txtCustomerID.getText());
 
             TableContextFull.getItems().remove(TableContextFull.getSelectionModel().getSelectedItem());
             TableContextFull.getSelectionModel().clearSelection();
@@ -257,13 +209,18 @@ public class CustomerFormController {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        clearText();
+        loadAllCustomers();
+
     }
 
     /* type id and search customer using clicking search image */
-    //do......................................
     public void searchOnAction(MouseEvent mouseEvent) throws SQLException, ClassNotFoundException {
         customerIdLbl.setDisable(false);
-      ResultSet resultSet = crudUtil.execute("SELECT * FROM customer WHERE cusId=?", txtCustomerID.getText());
+        ResultSet resultSet = customerBO.search(txtCustomerID.getText());
+        if (resultSet == null){
+            new Alert(Alert.AlertType.ERROR, "Invalid Item Id").show();
+        } else {
 
         if (resultSet.next()) {
             txtMrMrs.setText(resultSet.getString(2));
@@ -274,12 +231,9 @@ public class CustomerFormController {
             txtNic.setText(resultSet.getString(7));
         } else {
             new Alert(Alert.AlertType.WARNING, "Empty Result").show();
-            loadAllCustomers();
         }
-        //customerBO.searchCustomer(new CustomerDTO(txtCustomerID.getText(), txtMrMrs.getText(), txtCustomerName.getText(), txtCustomerAddress.getText(), txtTelNo.getText(), txtCustomerProvince.getText(), txtNic.getText()));
-
-        //customerBO.searchCustomer(new CustomerDTO(id, title, name, address, telNo, province, nic));
-                loadAllCustomers();
+        }
+         loadAllCustomers();
     }
 
 

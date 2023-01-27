@@ -3,6 +3,7 @@ package lk.ijse.jewellery.bo.custom;
 import lk.ijse.jewellery.bo.SuperBO;
 import lk.ijse.jewellery.model.EmployeeDTO;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -15,5 +16,7 @@ public interface EmployeeBO extends SuperBO {
         public boolean update(EmployeeDTO dto) throws SQLException, ClassNotFoundException ;
 
         public boolean delete(String id) throws SQLException, ClassNotFoundException;
+
+        ResultSet search(String text) throws SQLException, ClassNotFoundException;
 
 }

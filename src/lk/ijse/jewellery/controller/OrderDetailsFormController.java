@@ -3,15 +3,22 @@ package lk.ijse.jewellery.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import lk.ijse.jewellery.model.OrderDetails;
+import lk.ijse.jewellery.bo.BOFactory;
+import lk.ijse.jewellery.bo.custom.EmployeeBO;
+import lk.ijse.jewellery.bo.custom.PlaceOrderBO;
+import lk.ijse.jewellery.model.EmployeeDTO;
+import lk.ijse.jewellery.model.OrderDetailsDTO;
 import lk.ijse.jewellery.util.Navigation;
 import lk.ijse.jewellery.util.NotificationController;
 import lk.ijse.jewellery.dao.crudUtil;
+import lk.ijse.jewellery.view.tm.EmployeeTM;
+import lk.ijse.jewellery.view.tm.OrderDetailsTM;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -20,19 +27,20 @@ import java.util.ArrayList;
 
 public class OrderDetailsFormController {
     public TextField SearchOrderID;
-    public TableColumn<OrderDetails, String> orderIdCol;
-    public TableColumn<OrderDetails, String> ItemCodeCol;
-    public TableColumn<OrderDetails, String> QtyCol;
-    public TableColumn<OrderDetails, String> DiscountCol;
-    public TableColumn<OrderDetails, String> PriceCol;
+    public TableColumn<OrderDetailsDTO, String> orderIdCol;
+    public TableColumn<OrderDetailsDTO, String> ItemCodeCol;
+    public TableColumn<OrderDetailsDTO, String> QtyCol;
+    public TableColumn<OrderDetailsDTO, String> DiscountCol;
+    public TableColumn<OrderDetailsDTO, String> PriceCol;
     public AnchorPane OrderDetailsFormAnchorPane;
-    public TableView<OrderDetails> ODetailFormTbl;
+    public TableView<OrderDetailsTM> ODetailFormTbl;
     public TextField itemCodeTxt;
     public TextField qtyTxt;
     public TextField discountTxt;
     public TextField priceTxt;
 
 
+    PlaceOrderBO placeOrderBO = (PlaceOrderBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.PO);
     public void initialize() {
         orderIdCol.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         ItemCodeCol.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
@@ -49,47 +57,51 @@ public class OrderDetailsFormController {
 
     /* loading all order details */
     private void loadAllOrderDetails() throws SQLException, ClassNotFoundException {
-        ResultSet result = crudUtil.execute("SELECT * FROM orderDetails");
-        ObservableList<OrderDetails> obList = FXCollections.observableArrayList();
+        ODetailFormTbl.getItems().clear();
+        try {
+            ArrayList<OrderDetailsDTO> allOrderDetails = PlaceOrderBO.getAll();
 
-        while (result.next()) {
-            obList.add(
-                    new OrderDetails(
-                            result.getString("orderId"),
-                            result.getString("itemCode"),
-                            result.getDouble("OrderQty"),
-                            result.getDouble("totalAmount"),
-                            result.getDouble("discount")
-                    ));
+            for (OrderDetailsDTO od : allOrderDetails) {
+                ODetailFormTbl.getItems().add(new OrderDetailsTM(od.getOrderId(), od.getItemCode(), od.getOrderQty(), od.getTotalAmount(), od.getDiscount()));
+            }
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+        } catch (ClassNotFoundException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
-        ODetailFormTbl.setItems(obList);
+
         ODetailFormTbl.refresh();
     }
 
     /* searching order details  */
     public void search(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = crudUtil.execute("SELECT * FROM orderDetails WHERE orderId=?", SearchOrderID.getText());
-
-        if (resultSet.next()) {
-            itemCodeTxt.setText(resultSet.getString(2));
-            qtyTxt.setText(resultSet.getString(3));
-            priceTxt.setText(resultSet.getString(4));
-            discountTxt.setText(resultSet.getString(5));
-
-            NotificationController.searchResultFound();
+        ResultSet resultSet = placeOrderBO.search(SearchOrderID.getText());
+        if (resultSet == null){
+            new Alert(Alert.AlertType.ERROR, "Invalid Item Id").show();
         } else {
-            NotificationController.searchResultNotFound();
-            loadAllOrderDetails();
+
+            if (resultSet.next()) {
+                itemCodeTxt.setText(resultSet.getString(2));
+                qtyTxt.setText(resultSet.getString(3));
+                priceTxt.setText(resultSet.getString(4));
+                discountTxt.setText(resultSet.getString(5));
+
+
+            } else {
+                new Alert(Alert.AlertType.WARNING, "Empty Result").show();
+                loadAllOrderDetails();
+            }
         }
+
     }
 
     public void backOnAction(ActionEvent actionEvent) throws IOException {
         Navigation.AdminORCashierUI("EmployeeHomeForm", OrderDetailsFormAnchorPane);
     }
 
-     public static boolean  saveOrderDetails(ArrayList<OrderDetails> details) throws SQLException, ClassNotFoundException {
-        for (OrderDetails det : details
-        ) {
+    //TOdo......................................
+     public static boolean  saveOrderDetails(ArrayList<OrderDetailsDTO> details) throws SQLException, ClassNotFoundException {
+        for (OrderDetailsDTO det : details) {
 
             boolean isDetailsSaved = crudUtil.execute("INSERT INTO orderDetails VALUES(?,?,?,?,?)",
                     det.getOrderId(), det.getItemCode(), det.getOrderQty(), det.getDiscount(), det.getTotalAmount());
@@ -105,6 +117,7 @@ public class OrderDetailsFormController {
         return true;
     }
 
+    //TOdo......................................
     public static String getOrderId() throws SQLException, ClassNotFoundException {
         ResultSet set = crudUtil.execute("SELECT orderId FROM  `order` ORDER BY orderId DESC LIMIT 1");
         if (set.next()) {

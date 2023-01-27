@@ -6,6 +6,7 @@ import lk.ijse.jewellery.dao.custom.EmployeeDAO;
 import lk.ijse.jewellery.entity.Employee;
 import lk.ijse.jewellery.model.EmployeeDTO;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -49,6 +50,11 @@ public class EmployeeBOImpl implements EmployeeBO {
     @Override
     public boolean delete(String id) throws SQLException, ClassNotFoundException {
         return employeeDAO.delete(id);
+    }
+
+    @Override
+    public ResultSet search(String text) throws SQLException, ClassNotFoundException{
+        return employeeDAO.search(text);
     }
 
 }

@@ -1,3 +1,5 @@
+//complete***********************************************************
+
 package lk.ijse.jewellery.controller;
 
 import com.jfoenix.controls.JFXButton;
@@ -75,22 +77,6 @@ public class SupplierFormController {
 
     /* load all supplier details */
     private void loadAllSuppliers() throws SQLException, ClassNotFoundException {
-       /* ResultSet result = crudUtil.execute("SELECT * FROM supplier");
-        ObservableList<SupplierDTO> obList = FXCollections.observableArrayList();
-
-        while (result.next()) {
-            obList.add(
-                    new SupplierDTO(
-                            result.getString("supId"),
-                            result.getString("name"),
-                            result.getString("nic"),
-                            result.getString("address"),
-                            result.getString("telNo"),
-                            result.getString("companyName")
-                    ));
-        }
-        SupplierTable.setItems(obList);
-        SupplierTable.refresh();*/
         SupplierTable.getItems().clear();
         try {
             ArrayList<SupplierDTO> allSuppliers = supplierBO.getAll();
@@ -113,45 +99,7 @@ public class SupplierFormController {
 
     /* save supplier details */
     public void saveOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-      /*  String address = Address.getText();
-        String company = companyTxt.getText();
-        String contact = ContactTxt.getText();
-        String nic = NicTxt.getText();
-        String name = NameTxt.getText();
-        String id = idTxt.getText();
-
-
-        SupplierDTO supplier = new SupplierDTO(
-                id,
-                name,
-                nic,
-                address,
-                contact,
-                company
-        );
-        try {
-            String sql = "INSERT INTO supplier VALUES (?, ?, ?, ?, ?, ?)";
-
-            boolean isAdded = crudUtil.execute(sql,
-                    supplier.getSupId(),
-                    supplier.getName(),
-                    supplier.getNic(),
-                    supplier.getAddress(),
-                    supplier.getTelNo(),
-                    supplier.getCompanyName()
-            );
-
-            if (isAdded) {
-                new Alert(Alert.AlertType.CONFIRMATION, "Supplier Added!").show();
-            } else {
-                new Alert(Alert.AlertType.WARNING, "Something happened!").show();
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        loadAllSuppliers();
-        clearText(); */
-        try {
+              try {
 
             supplierBO.add(new SupplierDTO(
                     idTxt.getText(),
@@ -188,32 +136,6 @@ public class SupplierFormController {
 
     /* update supplier details */
     public void UpdateBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-
-       /* SupplierDTO supplier = new SupplierDTO(
-                idTxt.getText(),
-                NameTxt.getText(),
-                NicTxt.getText(),
-                Address.getText(),
-                ContactTxt.getText(),
-                companyTxt.getText()
-        );
-
-        boolean isUpdated = crudUtil.execute("UPDATE supplier SET name=? , nic=? , address=? , telNo=? , companyName=? WHERE supId=?",
-                supplier.getName(),
-                supplier.getNic(),
-                supplier.getAddress(),
-                supplier.getTelNo(),
-                supplier.getCompanyName(),
-                supplier.getSupId()
-        );
-
-        if (isUpdated) {
-            new Alert(Alert.AlertType.CONFIRMATION, "Supplier Details Updated !").show();
-            clearText();
-            loadAllSuppliers();
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
-        }*/
         try {
             supplierBO.update(new SupplierDTO(
                     idTxt.getText(),
@@ -233,15 +155,6 @@ public class SupplierFormController {
 
     /* removing supplier details */
     public void RemoveBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-      /*  boolean isDeleted = crudUtil.execute("DELETE FROM supplier WHERE supId=?", idTxt.getText());
-
-        if (isDeleted) {
-            NotificationController.detailsRemoved();
-            clearText();
-            loadAllSuppliers();
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
-        }*/
         try {
             supplierBO.delete(idTxt.getText());
 
@@ -278,23 +191,25 @@ public class SupplierFormController {
 
     }
 
-    //do..................................................................................
     /* search supplier */
     public void searchOnAction(MouseEvent mouseEvent) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = crudUtil.execute("SELECT * FROM supplier WHERE supId=?", idTxt.getText());
-
-        if (resultSet.next()) {
-
-            NameTxt.setText(resultSet.getString(2));
-            NicTxt.setText(resultSet.getString(3));
-            Address.setText(resultSet.getString(4));
-            ContactTxt.setText(resultSet.getString(5));
-            companyTxt.setText(resultSet.getString(6));
-
+        ResultSet resultSet = supplierBO.search(idTxt.getText());
+        if (resultSet == null){
+            new Alert(Alert.AlertType.ERROR, "Invalid Item Id").show();
         } else {
-            new Alert(Alert.AlertType.WARNING, "Empty Result").show();
-            loadAllSuppliers();
-            clearText();
+            if (resultSet.next()) {
+
+                NameTxt.setText(resultSet.getString(2));
+                NicTxt.setText(resultSet.getString(3));
+                Address.setText(resultSet.getString(4));
+                ContactTxt.setText(resultSet.getString(5));
+                companyTxt.setText(resultSet.getString(6));
+
+            } else {
+                new Alert(Alert.AlertType.WARNING, "Empty Result").show();
+                loadAllSuppliers();
+                clearText();
+            }
         }
     }
 

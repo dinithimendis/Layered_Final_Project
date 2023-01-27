@@ -6,6 +6,7 @@ import lk.ijse.jewellery.dao.custom.ItemDAO;
 import lk.ijse.jewellery.entity.Item;
 import lk.ijse.jewellery.model.ItemDTO;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -52,5 +53,10 @@ public class ItemBOImpl implements ItemBO {
     @Override
     public boolean delete(String id) throws SQLException, ClassNotFoundException {
         return itemDAO.delete(id);
+    }
+
+    @Override
+    public ResultSet search(String text) throws SQLException, ClassNotFoundException{
+        return itemDAO.search(text);
     }
 }

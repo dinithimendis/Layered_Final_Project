@@ -10,6 +10,7 @@ import lk.ijse.jewellery.entity.Supplier;
 import lk.ijse.jewellery.model.ItemDTO;
 import lk.ijse.jewellery.model.SupplierDTO;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -56,5 +57,9 @@ public class SupplierBOImpl implements SupplierBO {
     @Override
     public boolean delete(String id) throws SQLException, ClassNotFoundException {
         return supplierDAO.delete(id);
+    }
+    @Override
+    public ResultSet search(String text) throws SQLException, ClassNotFoundException{
+        return supplierDAO.search(text);
     }
 }

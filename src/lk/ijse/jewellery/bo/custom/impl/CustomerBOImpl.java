@@ -16,7 +16,7 @@ public class CustomerBOImpl implements CustomerBO {
     CustomerDAO customerDAO = (CustomerDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.CUSTOMER);
 
     @Override
-    public ArrayList<CustomerDTO> getAllCustomers() throws SQLException, ClassNotFoundException {
+    public ArrayList<CustomerDTO> getAll() throws SQLException, ClassNotFoundException {
         ArrayList<CustomerDTO> allCustomers= new ArrayList<>();
         ArrayList<Customer> all = customerDAO.getAll();
         for (Customer c : all) {
@@ -37,16 +37,20 @@ public class CustomerBOImpl implements CustomerBO {
                 dto.getNic()));
     }
     @Override
-    public boolean updateCustomer(CustomerDTO dto) throws SQLException, ClassNotFoundException {
+    public boolean update(CustomerDTO dto) throws SQLException, ClassNotFoundException {
         return customerDAO.update(new Customer(dto.getCusId(), dto.getTitle(),dto.getCusName(), dto.getAddress(),dto.getTelNo(),dto.getProvince(),dto.getNic()));
     }
 
     @Override
-    public boolean deleteCustomer(String cusId) throws SQLException, ClassNotFoundException {
+    public boolean delete(String cusId) throws SQLException, ClassNotFoundException {
         return customerDAO.delete(cusId);
     }
    /* public Customer searchCustomer(String cusId) throws SQLException, ClassNotFoundException {
         return new customerDAO.search(cusId);
     }*/
+   @Override
+   public ResultSet search(String text) throws SQLException, ClassNotFoundException{
+       return customerDAO.search(text);
+   }
 
 }

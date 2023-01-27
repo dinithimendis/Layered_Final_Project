@@ -1,3 +1,5 @@
+//complete***********************************************************
+
 package lk.ijse.jewellery.controller;
 
 import com.jfoenix.controls.JFXButton;
@@ -53,11 +55,8 @@ public class ItemFormController {
         categoryCol.setCellValueFactory(new PropertyValueFactory<>("category"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-       // try {
             loadAllItems();
 
-       // } catch (SQLException | ClassNotFoundException ignored) {
-      //  }
 
         SaveButton.setOnMouseClicked(event -> {
             try {
@@ -76,38 +75,6 @@ public class ItemFormController {
 
     /* save item */
     public void saveOnAction() throws SQLException, ClassNotFoundException {
-       /* String itemCode = txtItemCode.getText();
-        String description = txtDescription.getText();
-        String category = txtCategory.getText();
-        int qty = Integer.parseInt(txtQty.getText());
-        double unitPrice = Double.parseDouble(txtUnitPrice.getText());
-        String type = txtType.getText();
-
-        Item item = new Item(itemCode, description, category, qty, unitPrice, type);
-
-        System.out.println(item);
-
-        try {
-            String sql = "INSERT INTO item VALUES (?, ?, ?, ?, ?, ?)";
-
-            boolean ifAdded = crudUtil.execute(sql,
-                    item.getItemCode(),
-                    item.getDescription(),
-                    item.getCategory(),
-                    item.getQty(),
-                    item.getUnitPrice(),
-                    item.getType()
-            );
-
-            System.out.println(ifAdded);
-
-            if (ifAdded) {
-                new Alert(Alert.AlertType.CONFIRMATION, "Item Added!").show();
-            } else {
-                new Alert(Alert.AlertType.WARNING, "Something happened!").show();
-            }
-        } catch (SQLException | ClassNotFoundException ignored) {
-        }*/
         try {
 
             itemBO.add(new ItemDTO(
@@ -135,22 +102,6 @@ public class ItemFormController {
 
     /* load all items */
     private void loadAllItems() throws SQLException, ClassNotFoundException {
-      /*  ResultSet resultSet =  crudUtil.execute("SELECT * FROM item");
-        ObservableList<ItemDTO> obList = FXCollections.observableArrayList();
-
-        while (resultSet.next()) {
-            obList.add(
-                    new ItemDTO(
-                            resultSet.getString("itemCode"),
-                            resultSet.getString("description"),
-                            resultSet.getString("category"),
-                            Integer.parseInt(resultSet.getString("qty")),
-                            Double.parseDouble(resultSet.getString("unitPrice")),
-                            resultSet.getString("type")
-                    ));
-        }
-      //  FullTable.setItems(obList);
-        FullTable.refresh();*/
         FullTable.getItems().clear();
         try {
             ArrayList<ItemDTO> allItems = itemBO.getAll();
@@ -173,33 +124,6 @@ public class ItemFormController {
 
     /* update item */
     public void UpdateButtonOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-
-        /*ItemDTO item = new ItemDTO(
-                txtItemCode.getText(),
-                txtDescription.getText(),
-                txtCategory.getText(),
-                Integer.parseInt(txtQty.getText()),
-                Double.parseDouble(txtUnitPrice.getText()),
-                txtType.getText()
-        );
-
-        boolean isUpdated = crudUtil.execute("UPDATE item SET description=? , category=? , qty=? , unitPrice=? , type=? WHERE itemCode=?",
-                item.getDescription(),
-                item.getCategory(),
-                item.getQty(),
-                item.getUnitPrice(),
-                item.getType(),
-                item.getItemCode()
-        );
-
-        if (isUpdated) {
-            new Alert(Alert.AlertType.CONFIRMATION, "Item Details Updated !").show();
-            clearTextField();
-            loadAllItems();
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
-        }*/
-      //  FullTable.getSelectionModel().clearSelection();
         try {
             itemBO.update(new ItemDTO(
                     txtItemCode.getText(),
@@ -212,27 +136,13 @@ public class ItemFormController {
 
         } catch (SQLException | ClassNotFoundException e) {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
-           // new Alert(Alert.AlertType.ERROR, "Failed to update the item " + txtItemCode + e.getMessage()).show();
-        } //catch (ClassNotFoundException e) {
-         // e.printStackTrace();
-      //  }
-      //  FullTable.refresh();
+        }
         loadAllItems();
         clearTextField();
     }
 
     /* delete item */
     public void DeleteBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-       /* boolean isDeleted = crudUtil.execute("DELETE FROM item WHERE itemCode=?", txtItemCode.getText());
-
-        if (isDeleted) {
-            NotificationController.detailsRemoved();
-            loadAllItems();
-            clearTextField();
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
-        }*/
-
         try {
             itemBO.delete(txtItemCode.getText());
 
@@ -260,17 +170,20 @@ public class ItemFormController {
 
     /* search items */
     public void searchOnAction(MouseEvent mouseEvent) throws SQLException, ClassNotFoundException {
-        ResultSet result = crudUtil.execute("SELECT * FROM item WHERE itemCode=?", txtItemCode.getText());
-
-        if (result.next()) {
-            txtDescription.setText(result.getString(2));
-            txtCategory.setText(result.getString(3));
-            txtQty.setText(result.getString(4));
-            txtUnitPrice.setText(result.getString(5));
-            txtType.setText(result.getString(6));
+        ResultSet resultSet = itemBO.search(txtItemCode.getText());
+        if (resultSet == null){
+            new Alert(Alert.AlertType.ERROR, "Invalid Item Id").show();
         } else {
-            new Alert(Alert.AlertType.WARNING, "Empty Result").show();
-            loadAllItems();
+            if (resultSet.next()) {
+                txtDescription.setText(resultSet.getString(2));
+                txtCategory.setText(resultSet.getString(3));
+                txtQty.setText(resultSet.getString(4));
+                txtUnitPrice.setText(resultSet.getString(5));
+                txtType.setText(resultSet.getString(6));
+            } else {
+                new Alert(Alert.AlertType.WARNING, "Empty Result").show();
+                loadAllItems();
+            }
         }
     }
 
@@ -322,5 +235,4 @@ public class ItemFormController {
         txtUnitPrice.requestFocus();
     }
 
-    //------------------------------------------------------------------------------------------------------------------
 }

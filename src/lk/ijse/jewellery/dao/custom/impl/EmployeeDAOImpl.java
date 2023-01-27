@@ -34,4 +34,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     public boolean delete(String id) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("DELETE FROM employee WHERE empId=?", id);
     }
+    @Override
+    public ResultSet search(String id) throws SQLException, ClassNotFoundException {
+        return crudUtil.execute("SELECT * FROM employee WHERE empId=?", id);
+    }
 }

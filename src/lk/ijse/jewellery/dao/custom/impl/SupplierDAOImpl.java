@@ -43,4 +43,9 @@ public class SupplierDAOImpl implements SupplierDAO {
     public boolean delete(String id) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("DELETE FROM supplier WHERE supId=?", id);
     }
+
+    @Override
+    public ResultSet search(String id) throws SQLException, ClassNotFoundException {
+        return crudUtil.execute("SELECT * FROM supplier WHERE supId=?", id);
+    }
 }

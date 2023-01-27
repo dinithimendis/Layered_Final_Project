@@ -1,3 +1,5 @@
+//complete***********************************************************
+
 package lk.ijse.jewellery.controller;
 
 import com.jfoenix.controls.JFXButton;
@@ -86,14 +88,17 @@ public class EmployeeFormController {
 
     }
 
-    //TODO complete 100%
     private void loadAllEmployee() throws SQLException, ClassNotFoundException {
         EmployeeTable.getItems().clear();
         try {
             ArrayList<EmployeeDTO> allEmployees = employeeBO.getAll();
 
             for (EmployeeDTO e : allEmployees) {
-                EmployeeTable.getItems().add(new EmployeeTM(e.getEmpId(), e.getName(), e.getNic(), e.getSalary(), e.getTelNo(), e.getAddress(), e.getJobRole()));
+                EmployeeTable.getItems().add(new EmployeeTM(
+                        e.getEmpId(), e.getName(),
+                        e.getNic(), e.getSalary(),
+                        e.getTelNo(), e.getAddress(),
+                        e.getJobRole()));
             }
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
@@ -102,26 +107,8 @@ public class EmployeeFormController {
         }
 
         EmployeeTable.refresh();
-       /* ResultSet result = crudUtil.execute("SELECT * FROM employee");
-        ObservableList<Employee> obList = FXCollections.observableArrayList();
-
-        while (result.next()) {
-            obList.add(
-                    new Employee(
-                            result.getString("empId"),
-                            result.getString("name"),
-                            result.getString("nic"),
-                            result.getDouble("salary"),
-                            result.getString("telNo"),
-                            result.getString("address"),
-                            result.getString("jobRole")
-                    ));
-        }
-        EmployeeTable.setItems(obList);
-        EmployeeTable.refresh();*/
     }
 
-    //TODO complete 100%
     public void UpdateBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
         EmployeeDTO employee = new EmployeeDTO(
                 txtId.getText(),
@@ -133,23 +120,6 @@ public class EmployeeFormController {
                 txtJobRole.getText()
         );
 
-       /* boolean isUpdated = crudUtil.execute("UPDATE employee SET name=? , nic=? , salary=? , telNo=? , address=? , jobRole=? WHERE empId=?",
-                employee.getName(),
-                employee.getNic(),
-                employee.getSalary(),
-                employee.getTelNo(),
-                employee.getAddress(),
-                employee.getJobRole(),
-                employee.getEmpId()
-        );
-
-        /*if (isUpdated) {
-            new Alert(Alert.AlertType.CONFIRMATION, "Customer Details Updated !").show();
-            loadAllEmployee();
-            clearText();
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
-        }*/
         try {
             employeeBO.update(new EmployeeDTO(txtId.getText(), txtName.getText(), txtNic.getText(), Double.parseDouble(salary.getText()), txtContact.getText(), txtAddress.getText(), txtJobRole.getText()));
 
@@ -163,17 +133,7 @@ public class EmployeeFormController {
         clearText();
     }
 
-    //TODO complete 100%
     public void RemoveBtnOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
-       /* boolean isDeleted =crudUtil.execute("DELETE FROM employee WHERE empId=?", txtId.getText());
-
-        if (isDeleted) {
-            NotificationController.detailsRemoved();
-            clearText();
-            loadAllEmployee();
-        } else {
-            new Alert(Alert.AlertType.WARNING, "Something went wrong!").show();
-        }*/
         try {
             employeeBO.delete(txtId.getText());
 
@@ -189,19 +149,7 @@ public class EmployeeFormController {
         loadAllEmployee();
     }
 
-    //TODO complete 100%
     public void saveOnAction() throws SQLException, ClassNotFoundException {
-     /*   EmployeeDTO employee = new EmployeeDTO(
-                txtId.getText(),
-                txtName.getText(),
-                txtNic.getText(),
-                Double.parseDouble(salary.getText()),
-                // salary.getLayoutY(),
-                txtContact.getText(),
-                txtAddress.getText(),
-                txtJobRole.getText()
-
-        );*/
         try {
 
             employeeBO.add(new EmployeeDTO(
@@ -222,25 +170,22 @@ public class EmployeeFormController {
                     txtAddress.getText(),
                     txtJobRole.getText()));
 
-        } catch (SQLException | ClassNotFoundException ignored) {
-/*
-            new Alert(Alert.AlertType.ERROR, "Failed to save the employee " + e.getMessage()).show();
-*/
-        }
+        } catch (SQLException | ClassNotFoundException ignored){
 
+        }
         clearText();
         loadAllEmployee();
     }
 
-    //TODO complete 100%
     public void backOnAction(ActionEvent actionEvent) throws IOException {
         Navigation.AdminORCashierUI("AdminHomeForm", EmployeeAnchorPane);
     }
 
-    //do.............................................
-    //TODO complete 100%
     public void employeeSearch(MouseEvent mouseEvent) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = crudUtil.execute("SELECT * FROM employee WHERE empId=?", txtId.getText());
+        ResultSet resultSet = employeeBO.search(txtId.getText());
+        if (resultSet == null){
+            new Alert(Alert.AlertType.ERROR, "Invalid Item Id").show();
+        } else {
 
         if (resultSet.next()) {
             txtName.setText(resultSet.getString(2));
@@ -255,9 +200,9 @@ public class EmployeeFormController {
             new Alert(Alert.AlertType.WARNING, "Empty Result").show();
             loadAllEmployee();
         }
+        }
     }
 
-    //TODO complete 100%
     public void clearText() {
         txtContact.clear();
         txtNic.clear();
@@ -271,7 +216,7 @@ public class EmployeeFormController {
     public void save(ActionEvent actionEvent) {
     }
 
-    //TODO start here ............................
+
     public void textFields_Key_Released(KeyEvent keyEvent) {
         validationUtil.validate(map, (JFXButton) btnSaveEmployee);
         if (keyEvent.getCode() == KeyCode.ENTER) {

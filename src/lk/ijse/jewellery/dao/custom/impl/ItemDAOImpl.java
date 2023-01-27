@@ -44,4 +44,8 @@ public class ItemDAOImpl implements ItemDAO {
     public boolean delete(String id) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("DELETE FROM item WHERE itemCode=?", id);
     }
+    @Override
+    public ResultSet search(String id) throws SQLException, ClassNotFoundException {
+        return crudUtil.execute("SELECT * FROM item WHERE itemCode=?", id);
+    }
 }

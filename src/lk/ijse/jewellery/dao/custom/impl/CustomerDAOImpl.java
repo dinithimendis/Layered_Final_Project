@@ -10,6 +10,7 @@ import lk.ijse.jewellery.model.CustomerDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerDAOImpl implements CustomerDAO {
     @Override
@@ -49,4 +50,32 @@ public class CustomerDAOImpl implements CustomerDAO {
   public ResultSet search(String id) throws SQLException, ClassNotFoundException {
       return crudUtil.execute("SELECT * FROM customer WHERE cusId=?", id);
   }
+    @Override
+    public List<String> getCustomerIds() throws SQLException, ClassNotFoundException {
+        ResultSet rst = crudUtil.execute("SELECT * FROM customer");
+        List<String> ids = new ArrayList<>();
+        while (rst.next()) {
+            ids.add(rst.getString(1));
+        }
+        return ids;
+    }
+
+    @Override
+    public Customer getCustomer(String id) throws SQLException, ClassNotFoundException {
+        ResultSet rst = crudUtil.execute("SELECT * FROM customer WHERE cusId=?", id);
+        if (rst.next()) {
+            return new Customer(
+                    rst.getString(1),
+                    rst.getString(2),
+                    rst.getString(3),
+                    rst.getString(4),
+                    rst.getString(5),
+                    rst.getString(6),
+                    rst.getString(7)
+            );
+
+        } else {
+            return null;
+        }
+    }
 }

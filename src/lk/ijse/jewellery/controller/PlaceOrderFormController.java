@@ -15,6 +15,7 @@ import javafx.util.Duration;
 import lk.ijse.jewellery.bo.BOFactory;
 import lk.ijse.jewellery.bo.custom.PlaceOrderBO;
 import lk.ijse.jewellery.db.DBConnection;
+import lk.ijse.jewellery.entity.Customer;
 import lk.ijse.jewellery.model.CustomerDTO;
 import lk.ijse.jewellery.model.ItemDTO;
 import lk.ijse.jewellery.model.OrderDTO;
@@ -39,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static lk.ijse.jewellery.controller.CustomerFormController.getCustomer;
 import static lk.ijse.jewellery.controller.OrderDetailsFormController.getOrderId;
@@ -74,7 +76,7 @@ public class PlaceOrderFormController {
 
    PlaceOrderBO placeOrderBO  = (PlaceOrderBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.PO);
 
-    public void initialize() {
+    public void initialize() throws SQLException, ClassNotFoundException {
 
         OrderIDCol.setCellValueFactory(new PropertyValueFactory<>("OrderId"));
         ItemCodeCol.setCellValueFactory(new PropertyValueFactory<>("ItemCode"));
@@ -113,7 +115,6 @@ public class PlaceOrderFormController {
     private void setItemCodes() {
         try {
 
-            //TODO ---------------------------------------------
             ItemCodeCombo.setItems(FXCollections.observableArrayList(getItemCodes()));
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -121,27 +122,44 @@ public class PlaceOrderFormController {
     }
 
     /* setting customer id's to combo box  */
-    private void setCustomerIds() {
-        try {
-            ResultSet result = crudUtil.execute("SELECT cusId FROM customer");
+    //private void setCustomerIds() {
+        public void setCustomerIds() throws SQLException, ClassNotFoundException {
+            List<String> id = placeOrderBO.getCustomerIds();
+            CustomerIDCombo.getItems().addAll(id);
+
+        }
+
+         /*try {
+           ResultSet result = crudUtil.execute("SELECT cusId FROM customer");
             ArrayList<String> ids = new ArrayList<>();
             while (result.next()) {
                 ids.add(result.getString(1));
             }
+
             ObservableList<String> cIdObList =
-                    FXCollections.observableArrayList(
-                            ids);
+                    FXCollections.observableArrayList(ids);
             CustomerIDCombo.setItems(cIdObList);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-        }
-    }
+        }*/
+
+
 
     /**
      * if you select any kind of customer id loading their details into text fields
      */
-    public void setCustomerDetails(String selectedCustomerId) {
-        try {
+   // public void setCustomerDetails(String selectedCustomerId) {
+    private void setCustomerDetails(String ID) throws SQLException, ClassNotFoundException {
+
+        Customer c1 = placeOrderBO.getCustomer(ID);
+        if (c1 == null) {
+            new Alert(Alert.AlertType.WARNING, "Empty Customer data");
+        } else {
+            NameTxt.setText(c1.getCusName());
+            AddressTxt.setText(c1.getAddress());
+            CityTxt.setText(c1.getProvince());
+        }
+       /* try {
             CustomerDTO c = getCustomer(selectedCustomerId);
             if (c != null) {
 
@@ -153,7 +171,7 @@ public class PlaceOrderFormController {
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**

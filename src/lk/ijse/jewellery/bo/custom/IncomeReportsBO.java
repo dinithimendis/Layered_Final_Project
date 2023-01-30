@@ -1,4 +1,9 @@
+/*
 package lk.ijse.jewellery.bo.custom;
 
-public interface IncomeReportsBO {
+import lk.ijse.jewellery.bo.SuperBO;
+
+public interface IncomeReportsBO extends SuperBO {
+
 }
+*/

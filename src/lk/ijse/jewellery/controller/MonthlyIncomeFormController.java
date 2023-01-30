@@ -1,3 +1,4 @@
+/*
 package lk.ijse.jewellery.controller;
 
 
@@ -10,7 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import lk.ijse.jewellery.db.DBConnection;
-import lk.ijse.jewellery.model.IncomeReport;
+import lk.ijse.jewellery.model.IncomeReportsDTO;
 import lk.ijse.jewellery.util.Navigation;
 
 import java.io.IOException;
@@ -20,11 +21,11 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class MonthlyIncomeFormController implements Initializable {
-    public TableView<IncomeReport> tblReport;
-    public TableColumn<IncomeReport, String> colMonth;
-    public TableColumn<IncomeReport, String> colOrderCount;
-    public TableColumn<IncomeReport, String> colItemSoldQty;
-    public TableColumn<IncomeReport, String> colCost;
+    public TableView<IncomeReportsDTO> tblReport;
+    public TableColumn<IncomeReportsDTO, String> colMonth;
+    public TableColumn<IncomeReportsDTO, String> colOrderCount;
+    public TableColumn<IncomeReportsDTO, String> colItemSoldQty;
+    public TableColumn<IncomeReportsDTO, String> colCost;
     public AnchorPane monthlyBackOnAction;
 
 
@@ -44,11 +45,13 @@ public class MonthlyIncomeFormController implements Initializable {
     }
     //TOdo......................................
 
-    /* generating monthly wise income  */
-    private ObservableList<IncomeReport> loadMonthlyIncomeReport() throws SQLException, ClassNotFoundException {
+    */
+/* generating monthly wise income  *//*
+
+    private ObservableList<IncomeReportsDTO> loadMonthlyIncomeReport() throws SQLException, ClassNotFoundException {
 
         ResultSet resultSet = DBConnection.getInstance().getConnection().prepareStatement("SELECT (MONTHNAME(OrderDate)) ,sum(orderDetails.OrderQty),count(`order`.orderId),sum(orderDetails.totalAmount)  FROM `order` INNER JOIN orderDetails ON `order`.orderId = orderDetails.orderId GROUP BY extract(MONTH FROM(OrderDate))").executeQuery();
-        ObservableList<IncomeReport> tempo = FXCollections.observableArrayList();
+        ObservableList<IncomeReportsDTO> tempo = FXCollections.observableArrayList();
 
         while (resultSet.next()) {
 
@@ -57,7 +60,7 @@ public class MonthlyIncomeFormController implements Initializable {
             int numberOfSoldItem = resultSet.getInt(2);
             double sumOfTotal = resultSet.getDouble(4);
 
-            tempo.add(new IncomeReport(date, countOrderId, numberOfSoldItem, sumOfTotal));
+            tempo.add(new IncomeReportsDTO(date, countOrderId, numberOfSoldItem, sumOfTotal));
         }
         return tempo;
     }
@@ -65,4 +68,4 @@ public class MonthlyIncomeFormController implements Initializable {
     public void backOnAction(ActionEvent actionEvent) throws IOException {
         Navigation.AdminORCashierUI("BarChartFormController", monthlyBackOnAction);
     }
-}
+}*/

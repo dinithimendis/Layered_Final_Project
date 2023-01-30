@@ -2,9 +2,8 @@ package lk.ijse.jewellery.bo.custom.impl;
 
 import lk.ijse.jewellery.bo.custom.PlaceOrderBO;
 import lk.ijse.jewellery.dao.DAOFactory;
-import lk.ijse.jewellery.dao.custom.EmployeeDAO;
-import lk.ijse.jewellery.dao.custom.OrderDAO;
-import lk.ijse.jewellery.dao.custom.OrderDetailsDAO;
+import lk.ijse.jewellery.dao.custom.*;
+import lk.ijse.jewellery.entity.Customer;
 import lk.ijse.jewellery.entity.Employee;
 import lk.ijse.jewellery.entity.Order;
 import lk.ijse.jewellery.entity.OrderDetails;
@@ -15,12 +14,20 @@ import lk.ijse.jewellery.model.OrderDetailsDTO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PlaceOrderBOImpl implements PlaceOrderBO {
 
-    OrderDAO orderDAO = (OrderDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ORDER);
+    CustomerDAO customerDAO= (CustomerDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.CUSTOMER);
+    ItemDAO itemDAO = (ItemDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ITEM);
+    OrderDAO orderDAO= (OrderDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ORDER);
+    OrderDetailsDAO orderDetailsDAO= (OrderDetailsDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ORDER_DETAILS);
 
-    OrderDetailsDAO orderDetailsDAO = (OrderDetailsDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ORDER_DETAILS);
+
+
+   // OrderDAO orderDAO = (OrderDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ORDER);
+
+    //OrderDetailsDAO orderDetailsDAO = (OrderDetailsDAO) DAOFactory.getDaoFactory().getDAO(DAOFactory.DAOTypes.ORDER_DETAILS);
 
     @Override
     public ArrayList<OrderDTO> getAllOrders() throws SQLException, ClassNotFoundException {
@@ -48,4 +55,13 @@ public class PlaceOrderBOImpl implements PlaceOrderBO {
     public ResultSet search(String text) throws SQLException, ClassNotFoundException{
         return orderDetailsDAO.search(text);
     }
+
+    @Override
+    public Customer getCustomer(String id) throws SQLException, ClassNotFoundException {
+        return customerDAO.getCustomer(id);
+    }
+   @Override
+   public List<String> getCustomerIds() throws SQLException, ClassNotFoundException {
+       return customerDAO.getCustomerIds();
+   }
 }

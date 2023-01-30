@@ -1,8 +1,7 @@
-package lk.ijse.jewellery.model;
+/*
+package lk.ijse.jewellery.view.tm;
 
 import lombok.*;
-
-import java.util.ArrayList;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,15 +9,21 @@ import java.util.ArrayList;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class IncomeReport {
+
+public class IncomeReportsTM implements Comparable<IncomeReportsTM>{
     private String date;
     private int numberOfOrders;
     private int numberOfSoldItem;
     private double finalCost;
 
-    public IncomeReport(String date, int numberOfSoldItem) {
+    public IncomeReportsTM(String date, int numberOfSoldItem) {
         this.date = date;
         this.numberOfSoldItem = numberOfSoldItem;
     }
+    @Override
+    public int compareTo(IncomeReportsTM o) {
+        return date.compareTo(o.getDate());
+    }
 
 }
+*/

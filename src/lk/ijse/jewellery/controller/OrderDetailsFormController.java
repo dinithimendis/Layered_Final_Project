@@ -59,7 +59,7 @@ public class OrderDetailsFormController {
     private void loadAllOrderDetails() throws SQLException, ClassNotFoundException {
         ODetailFormTbl.getItems().clear();
         try {
-            ArrayList<OrderDetailsDTO> allOrderDetails = PlaceOrderBO.getAll();
+            ArrayList<OrderDetailsDTO> allOrderDetails = placeOrderBO.getAll();
 
             for (OrderDetailsDTO od : allOrderDetails) {
                 ODetailFormTbl.getItems().add(new OrderDetailsTM(od.getOrderId(), od.getItemCode(), od.getOrderQty(), od.getTotalAmount(), od.getDiscount()));

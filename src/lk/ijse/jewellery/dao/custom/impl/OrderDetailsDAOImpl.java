@@ -47,5 +47,15 @@ public class OrderDetailsDAOImpl implements OrderDetailsDAO {
         return crudUtil.execute("SELECT * FROM orderDetails WHERE orderId=?", id);
     }
 
+    @Override
+    public ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
+        return null;
+    }
+
+    @Override
+    public OrderDetails searchItem(String id) throws SQLException, ClassNotFoundException {
+        return null;
+    }
+
 
 }

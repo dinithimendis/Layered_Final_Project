@@ -3,6 +3,7 @@ package lk.ijse.jewellery.dao.custom.impl;
 import lk.ijse.jewellery.dao.crudUtil;
 import lk.ijse.jewellery.dao.custom.EmployeeDAO;
 import lk.ijse.jewellery.dao.custom.ItemDAO;
+import lk.ijse.jewellery.entity.Customer;
 import lk.ijse.jewellery.entity.Employee;
 import lk.ijse.jewellery.entity.Item;
 
@@ -48,4 +49,30 @@ public class ItemDAOImpl implements ItemDAO {
     public ResultSet search(String id) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("SELECT * FROM item WHERE itemCode=?", id);
     }
+    @Override
+    public ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
+        ResultSet rst = crudUtil.execute("SELECT * FROM Item");
+        ArrayList<String> itemCodes = new ArrayList<>();
+        while (rst.next()) {
+            itemCodes.add(rst.getString(1));
+        }
+        return itemCodes;
+    }
+
+    @Override
+    public Item searchItem(String ItemCode) throws SQLException, ClassNotFoundException {
+        ResultSet rst = crudUtil.execute("SELECT * FROM item WHERE itemCode=?", ItemCode);
+        if (rst.next()) {
+            return new Item(
+                    rst.getString(1),
+                    rst.getString(2),
+                    rst.getString(3),
+                    rst.getInt(4),
+                    rst.getDouble(5),
+                    rst.getString(6)
+            );
+        }
+        return null;
+    }
+
 }

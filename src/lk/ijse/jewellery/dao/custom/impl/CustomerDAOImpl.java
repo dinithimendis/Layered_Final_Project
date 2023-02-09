@@ -50,6 +50,17 @@ public class CustomerDAOImpl implements CustomerDAO {
   public ResultSet search(String id) throws SQLException, ClassNotFoundException {
       return crudUtil.execute("SELECT * FROM customer WHERE cusId=?", id);
   }
+
+    @Override
+    public ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
+        return null;
+    }
+
+    @Override
+    public Customer searchItem(String id) throws SQLException, ClassNotFoundException {
+        return null;
+    }
+
     @Override
     public List<String> getCustomerIds() throws SQLException, ClassNotFoundException {
         ResultSet rst = crudUtil.execute("SELECT * FROM customer");

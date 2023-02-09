@@ -48,4 +48,14 @@ public class SupplierDAOImpl implements SupplierDAO {
     public ResultSet search(String id) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("SELECT * FROM supplier WHERE supId=?", id);
     }
+
+    @Override
+    public ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
+        return null;
+    }
+
+    @Override
+    public Supplier searchItem(String id) throws SQLException, ClassNotFoundException {
+        return null;
+    }
 }

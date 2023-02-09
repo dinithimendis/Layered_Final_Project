@@ -1,6 +1,7 @@
 package lk.ijse.jewellery.dao;
 
 import lk.ijse.jewellery.entity.Customer;
+import lk.ijse.jewellery.entity.Item;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +12,9 @@ public interface CrudDAO <T> extends SuperDAO{
     public boolean add(T entity) throws SQLException, ClassNotFoundException;
     public boolean update(T entity) throws SQLException, ClassNotFoundException;
     public boolean delete(String cusId) throws SQLException, ClassNotFoundException;
-
     ResultSet search(String id) throws SQLException, ClassNotFoundException;
+    public ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException;
+
+    T searchItem(String id) throws SQLException, ClassNotFoundException;
    // public T search(String cusId) throws SQLException, ClassNotFoundException;
 }

@@ -1,5 +1,4 @@
-/*
-package lk.ijse.jewellery.view.tm;
+package lk.ijse.jewellery.model;
 
 import lombok.*;
 
@@ -9,21 +8,15 @@ import lombok.*;
 @Getter
 @ToString
 @EqualsAndHashCode
-
-public class IncomeReportsTM implements Comparable<IncomeReportsTM>{
+public class DailyIncomeReportsDTO {
     private String date;
     private int numberOfOrders;
     private int numberOfSoldItem;
     private double finalCost;
 
-    public IncomeReportsTM(String date, int numberOfSoldItem) {
+    public DailyIncomeReportsDTO(String date, int numberOfSoldItem) {
         this.date = date;
         this.numberOfSoldItem = numberOfSoldItem;
     }
-    @Override
-    public int compareTo(IncomeReportsTM o) {
-        return date.compareTo(o.getDate());
-    }
 
 }
-*/

@@ -1,4 +1,3 @@
-/*
 package lk.ijse.jewellery.entity;
 
 import lombok.*;
@@ -10,15 +9,14 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 
-public class IncomeReports {
+public class DailyIncomeReports {
     private String date;
     private int numberOfOrders;
     private int numberOfSoldItem;
     private double finalCost;
 
-    public IncomeReports(String date, int numberOfSoldItem) {
+    public DailyIncomeReports(String date, int numberOfSoldItem) {
         this.date = date;
         this.numberOfSoldItem = numberOfSoldItem;
     }
 }
-*/

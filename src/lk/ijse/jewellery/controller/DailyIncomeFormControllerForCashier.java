@@ -1,4 +1,3 @@
-/*
 package lk.ijse.jewellery.controller;
 
 import javafx.collections.FXCollections;
@@ -6,13 +5,17 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import lk.ijse.jewellery.bo.BOFactory;
+import lk.ijse.jewellery.bo.custom.DailyIncomeReportsBO;
 import lk.ijse.jewellery.db.DBConnection;
-import lk.ijse.jewellery.model.IncomeReportsDTO;
+import lk.ijse.jewellery.model.DailyIncomeReportsDTO;
 import lk.ijse.jewellery.util.Navigation;
+import lk.ijse.jewellery.view.tm.DailyIncomeReportsTM;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,12 +25,14 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class DailyIncomeFormControllerForCashier implements Initializable {
-    public TableView<IncomeReportsDTO> tblReport;
-    public TableColumn<IncomeReportsDTO, String> colDate;
-    public TableColumn<IncomeReportsDTO, String> colOrderCost;
-    public TableColumn<IncomeReportsDTO, String> colItemQty;
-    public TableColumn<IncomeReportsDTO, String> colCost;
+    public TableView<DailyIncomeReportsTM> tblReport;
+    public TableColumn<DailyIncomeReportsDTO, String> colDate;
+    public TableColumn<DailyIncomeReportsDTO, String> colOrderCost;
+    public TableColumn<DailyIncomeReportsDTO, String> colItemQty;
+    public TableColumn<DailyIncomeReportsDTO, String> colCost;
     public AnchorPane dailyIncomeReportContext;
+
+    DailyIncomeReportsBO incomeReportsBO = (DailyIncomeReportsBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.INCOME_REPORT);
 
 
     @Override
@@ -49,43 +54,42 @@ public class DailyIncomeFormControllerForCashier implements Initializable {
     }
 
 
-    */
-/**
-     * load all reports details
-     *//*
+
+     /* load all reports details*/
+
 
     // TOdo......................................
-    private ObservableList<IncomeReportsDTO> loadDailyIncomeReport() throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = DBConnection.getInstance().getConnection().prepareStatement("SELECT `order`.OrderDate,count(`order`.orderId),sum(orderDetails.totalAmount) FROM `order` INNER JOIN orderDetails ON `order`.orderId = orderDetails.orderId GROUP BY OrderDate").executeQuery();
-        ObservableList<IncomeReportsDTO> obList = FXCollections.observableArrayList();
-        ArrayList<IncomeReportsDTO> data = getCountItems();
+    private ObservableList<DailyIncomeReportsTM> loadDailyIncomeReport() throws SQLException, ClassNotFoundException  {
+        tblReport.getItems().clear();
+        try {
+            ArrayList<DailyIncomeReportsDTO> allReports = incomeReportsBO.getAll();
 
-        int i = 0;
-        while (resultSet.next()) {
-
-            String date = resultSet.getString(1);
-            int countOrderId = resultSet.getInt(2);
-            double sumOfTotal = resultSet.getDouble(3);
-
-            obList.add(new IncomeReportsDTO(date, countOrderId, data.get(i).getNumberOfSoldItem(), sumOfTotal));
-            i++;
+            for (DailyIncomeReportsDTO c : allReports) {
+                tblReport.getItems().add(new DailyIncomeReportsTM(c.getDate(), c.getNumberOfSoldItem(), c.getNumberOfOrders(), c.getFinalCost()));
+            }
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+        } catch (ClassNotFoundException e) {
+            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
-        return obList;
+
+        tblReport.refresh();
+        return null;
     }
 
-    */
-/**
-     * calculate item count
-     *//*
+
+
+     /* calculate item count*/
+
 
     // TOdo......................................
-    private ArrayList<IncomeReportsDTO> getCountItems() throws SQLException, ClassNotFoundException {
+    private ArrayList<DailyIncomeReportsDTO> getCountItems() throws SQLException, ClassNotFoundException {
         ResultSet rest = DBConnection.getInstance().getConnection().prepareStatement("SELECT DISTINCT(`order`.OrderDate),sum(orderDetails.OrderQty) FROM `Order` INNER JOIN orderDetails ON  `order`.orderId = orderDetails.orderId GROUP BY `order`.OrderDate").executeQuery();
-        ArrayList<IncomeReportsDTO> temp = new ArrayList<>();
+        ArrayList<DailyIncomeReportsDTO> temp = new ArrayList<>();
 
         while (rest.next()) {
 
-            temp.add(new IncomeReportsDTO(rest.getString(1), rest.getInt(2)));
+            temp.add(new DailyIncomeReportsDTO(rest.getString(1), rest.getInt(2)));
         }
 
         return temp;
@@ -95,4 +99,3 @@ public class DailyIncomeFormControllerForCashier implements Initializable {
         Navigation.AdminORCashierUI("EmployeeHomeForm", dailyIncomeReportContext);
     }
 }
-*/

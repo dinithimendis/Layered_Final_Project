@@ -16,7 +16,7 @@ public class OrderDAOImpl implements OrderDAO {
         ArrayList<Order> allOrders = new ArrayList<>();
         ResultSet rst = crudUtil.execute("SELECT * FROM `order`");
         while (rst.next()) {
-            Order order = new Order(rst.getString("orderId"), rst.getString("customerId"), rst.getString("orderDate"),rst.getString("orderTime"));
+            Order order = new Order(rst.getString("orderId"), rst.getString("cusId"), rst.getString("orderDate"),rst.getString("orderTime"));
             allOrders.add(order);
         }
         return allOrders;
@@ -40,5 +40,15 @@ public class OrderDAOImpl implements OrderDAO {
     @Override
     public ResultSet search(String id) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("SELECT * FROM order WHERE orderId=?", id);
+    }
+
+    @Override
+    public ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
+        return null;
+    }
+
+    @Override
+    public Order searchItem(String id) throws SQLException, ClassNotFoundException {
+        return null;
     }
 }

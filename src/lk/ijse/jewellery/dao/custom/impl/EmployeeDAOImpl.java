@@ -38,4 +38,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     public ResultSet search(String id) throws SQLException, ClassNotFoundException {
         return crudUtil.execute("SELECT * FROM employee WHERE empId=?", id);
     }
+
+    @Override
+    public ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
+        return null;
+    }
+
+    @Override
+    public Employee searchItem(String id) throws SQLException, ClassNotFoundException {
+        return null;
+    }
 }

@@ -2,6 +2,7 @@ package lk.ijse.jewellery.bo.custom;
 
 import lk.ijse.jewellery.bo.SuperBO;
 import lk.ijse.jewellery.entity.Customer;
+import lk.ijse.jewellery.entity.Item;
 import lk.ijse.jewellery.model.EmployeeDTO;
 import lk.ijse.jewellery.model.OrderDTO;
 import lk.ijse.jewellery.model.OrderDetailsDTO;
@@ -22,5 +23,10 @@ public interface PlaceOrderBO extends SuperBO {
     ResultSet search(String text) throws SQLException, ClassNotFoundException;
 
     Customer getCustomer(String id) throws SQLException, ClassNotFoundException;
+
     List<String> getCustomerIds() throws SQLException, ClassNotFoundException;
+
+    Item searchItem(String newValue) throws SQLException, ClassNotFoundException;
+
+    ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException;
 }

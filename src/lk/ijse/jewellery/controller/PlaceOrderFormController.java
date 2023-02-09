@@ -14,15 +14,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import lk.ijse.jewellery.bo.BOFactory;
 import lk.ijse.jewellery.bo.custom.PlaceOrderBO;
+import lk.ijse.jewellery.dao.crudUtil;
 import lk.ijse.jewellery.db.DBConnection;
 import lk.ijse.jewellery.entity.Customer;
-import lk.ijse.jewellery.model.CustomerDTO;
+import lk.ijse.jewellery.entity.Item;
 import lk.ijse.jewellery.model.ItemDTO;
 import lk.ijse.jewellery.model.OrderDTO;
 import lk.ijse.jewellery.model.OrderDetailsDTO;
 import lk.ijse.jewellery.util.Navigation;
 import lk.ijse.jewellery.util.NotificationController;
-import lk.ijse.jewellery.dao.crudUtil;
 import lk.ijse.jewellery.view.tm.CartTM;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static lk.ijse.jewellery.controller.CustomerFormController.getCustomer;
 import static lk.ijse.jewellery.controller.OrderDetailsFormController.getOrderId;
 import static lk.ijse.jewellery.controller.OrderDetailsFormController.saveOrderDetails;
 
@@ -74,7 +73,22 @@ public class PlaceOrderFormController {
     int cartSelectedRowForRemove = -1;
     ObservableList<CartTM> tmList = FXCollections.observableArrayList();
 
-   PlaceOrderBO placeOrderBO  = (PlaceOrderBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.PO);
+    PlaceOrderBO placeOrderBO = (PlaceOrderBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.PO);
+
+    public static ItemDTO getItem(String code) throws SQLException, ClassNotFoundException {
+        ResultSet result = crudUtil.execute("SELECT * FROM item WHERE itemCode=?", code);
+        if (result.next()) {
+            return new ItemDTO(
+                    result.getString(1),
+                    result.getString(2),
+                    result.getString(3),
+                    result.getInt(4),
+                    result.getDouble(5),
+                    result.getString(6)
+            );
+        }
+        return null;
+    }
 
     public void initialize() throws SQLException, ClassNotFoundException {
 
@@ -90,17 +104,49 @@ public class PlaceOrderFormController {
         setItemCodes();
         setOrderId();
         setCustomerIds();
+        getItemCodes();
         //--------------------
 
-        CustomerIDCombo.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> {
+        CustomerIDCombo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                try {
                     setCustomerDetails(newValue);
+                } catch (SQLException | ClassNotFoundException throwable) {
+                    throwable.printStackTrace();
+                }
+            }
+        });
+        ItemCodeCombo.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                try {
+                    setItemDetails(newValue);
+                } catch (SQLException | ClassNotFoundException throwable) {
+                    throwable.printStackTrace();
+                }
+            }
+        });
+
+       /* CustomerIDCombo.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    try {
+                        setCustomerDetails(newValue);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
 
         ItemCodeCombo.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
-                    setItemDetails(newValue);
-                });
+                    try {
+                        setItemDetails(newValue);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                });*/
 
         PlaceOrderTbl.getSelectionModel().selectedIndexProperty()
                 .addListener((observable, oldValue, newValue) -> {
@@ -110,24 +156,14 @@ public class PlaceOrderFormController {
 
     }
 
-
     /* setting item code's to combo box  */
-    private void setItemCodes() {
-        try {
+    private void setItemCodes() throws SQLException, ClassNotFoundException {
+        List<String> id = placeOrderBO.getItemCodes();
+        ItemCodeCombo.getItems().addAll(id);
 
-            ItemCodeCombo.setItems(FXCollections.observableArrayList(getItemCodes()));
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        // ItemCodeCombo.setItems(FXCollections.observableArrayList());
+        //CustomerIDCombo.getItems().addAll(id);
     }
-
-    /* setting customer id's to combo box  */
-    //private void setCustomerIds() {
-        public void setCustomerIds() throws SQLException, ClassNotFoundException {
-            List<String> id = placeOrderBO.getCustomerIds();
-            CustomerIDCombo.getItems().addAll(id);
-
-        }
 
          /*try {
            ResultSet result = crudUtil.execute("SELECT cusId FROM customer");
@@ -143,12 +179,18 @@ public class PlaceOrderFormController {
             e.printStackTrace();
         }*/
 
+    /* setting customer id's to combo box  */
+    //private void setCustomerIds() {
+    public void setCustomerIds() throws SQLException, ClassNotFoundException {
+        List<String> id = placeOrderBO.getCustomerIds();
+        CustomerIDCombo.getItems().addAll(id);
 
+    }
 
     /**
      * if you select any kind of customer id loading their details into text fields
      */
-   // public void setCustomerDetails(String selectedCustomerId) {
+    // public void setCustomerDetails(String selectedCustomerId) {
     private void setCustomerDetails(String ID) throws SQLException, ClassNotFoundException {
 
         Customer c1 = placeOrderBO.getCustomer(ID);
@@ -177,8 +219,19 @@ public class PlaceOrderFormController {
     /**
      * if you select any kind of item id loading their details into text fields
      */
-    public void setItemDetails(String selectedItemCode) {
-        try {
+    //  public void setItemDetails(String selectedItemCode) {
+    private void setItemDetails(String ItemCode) throws SQLException, ClassNotFoundException {
+
+        Item i = placeOrderBO.searchItem(ItemCode);
+        if (i == null) {
+            new Alert(Alert.AlertType.WARNING, "Empty Item data");
+        } else {
+            DescriptionTxt.setText(i.getDescription());
+            QtyOnHandTxt.setText(String.valueOf(i.getQty()));
+            UnitPriceTxt.setText(String.valueOf(i.getUnitPrice()));
+        }
+
+       /* try {
 
             //TODO -------------------------------------------------
             ItemDTO i = getItem(selectedItemCode);
@@ -191,7 +244,7 @@ public class PlaceOrderFormController {
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     /**
@@ -217,14 +270,11 @@ public class PlaceOrderFormController {
     /* set order id */
     private void setOrderId() {
         try {
-
-            //TODO ------------------------
             OrderID.setText(getOrderId());
         } catch (SQLException | ClassNotFoundException throwable) {
             throwable.printStackTrace();
         }
     }
-
 
     public void playMouseEnterAnimation(MouseEvent mouseEvent) {
     }
@@ -238,7 +288,8 @@ public class PlaceOrderFormController {
                     new OrderDetailsDTO(
                             tm.getOrderId(),
                             tm.getItemCode(),
-                            tm.getQty(), tm.getTotal(),
+                            tm.getQty(),
+                            tm.getTotal(),
                             tm.getDiscount()
                     ));
             tm.getItemCode();
@@ -383,7 +434,6 @@ public class PlaceOrderFormController {
         Navigation.AdminORCashierUI("EmployeeHomeForm", placeOrderAnchorPane);
     }
 
-
     /* conform order */
     public void confirmOnAction(ActionEvent actionEvent) throws SQLException, ClassNotFoundException {
         ConfirmOrderOnAction();
@@ -419,32 +469,19 @@ public class PlaceOrderFormController {
         }
     }
 
-    public static ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
-        ResultSet result = crudUtil.execute("SELECT itemCode FROM item");
+    // public static ArrayList<String> getItemCodes() throws SQLException, ClassNotFoundException {
+    public void getItemCodes() throws SQLException, ClassNotFoundException {
+      /*  ResultSet result = crudUtil.execute("SELECT itemCode FROM item");
         ArrayList<String> codeList = new ArrayList<>();
         while (result.next()) {
             codeList.add(result.getString(1));
         }
-        return codeList;
+        return codeList;*/
+        ArrayList<String> ItemCodes = placeOrderBO.getItemCodes();
+        ItemCodeCombo.getItems().addAll(ItemCodes);
+
+
     }
-
-    public static ItemDTO getItem(String code) throws SQLException, ClassNotFoundException {
-        ResultSet result = crudUtil.execute("SELECT * FROM item WHERE itemCode=?", code);
-        if (result.next()) {
-            return new ItemDTO(
-                    result.getString(1),
-                    result.getString(2),
-                    result.getString(3),
-                    result.getInt(4),
-                    result.getDouble(5),
-                    result.getString(6)
-            );
-        }
-        return null;
-    }
-
-
-
 
 
 }
